@@ -7,79 +7,91 @@ import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 import com.example.constraintElements.TermVariable;
 import com.example.dnf.Conjunction;
+import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 import java.util.ArrayList;
 
 public class Sim {
 
+    static Disjunction disjunction = new Disjunction(new ArrayList<>());
     static relationCollection relationCollection = new relationCollection();
+
+    public static boolean solve(){
+        for(Conjunction d : disjunction.conjunctions){
+            if(sim(d)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean sim(Conjunction conjunction){
         
         for(int i = 0; i < conjunction.constraints.size(); i++){
-            if(conjunction.constraints.get(0).isSolved){ 
+
+            SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
+            if(similarityPredicate.isSolved){ 
                 conjunction.constraints.add(conjunction.constraints.remove(0));
                 continue;
             }
-            if(conjunction.constraints.get(0) instanceof SimilarityPredicate){
-                SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
-                if(delSimCond(similarityPredicate)){
-                    i = -1;
-                    continue;
-                }
-                if(decOFSCond(similarityPredicate)){
-                    decOFSOp(similarityPredicate, conjunction.constraints);
-                    i = -1;
-                    continue;
-                }
-                if(decEqCond(similarityPredicate)){
-                    decSimOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
-                    i = -1;
-                    continue;
-                }
-                if(oriEqCond(similarityPredicate)){
-                    oriSimOp(similarityPredicate, conjunction.constraints);
-                    i = -1;
-                    continue;
-                }
-                if(elimSimCond(similarityPredicate, conjunction.constraints)){
-                    elimSimOp(similarityPredicate, conjunction);
-                    i = -1;
-                    continue;
-                }
-                if(conflSimCond(similarityPredicate) || mismEqCond(similarityPredicate) || occEqCond(similarityPredicate)){
-                    conjunction.constraints.clear();
-                    return false;
-                }
-                conjunction.constraints.add(similarityPredicate);
+            if(delSimCond(similarityPredicate)){
+                i = -1;
+                continue;
             }
+            if(decUFSCond(similarityPredicate)){
+                decUFSOp(similarityPredicate, conjunction);
+                i = -1;
+                continue;
+            }
+            if(decEqCond(similarityPredicate)){
+                decSimOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
+                i = -1;
+                continue;
+            }
+            if(oriEqCond(similarityPredicate)){
+                oriSimOp(similarityPredicate, conjunction.constraints);
+                i = -1;
+                continue;
+            }
+            if(elimSimCond(similarityPredicate, conjunction.constraints)){
+                elimSimOp(similarityPredicate, conjunction);
+                i = -1;
+                continue;
+            }
+            if(conflSimCond(similarityPredicate) || mismEqCond(similarityPredicate) || occEqCond(similarityPredicate)){
+                conjunction.constraints.clear();
+                return false;
+            }
+            conjunction.constraints.add(similarityPredicate);
+        
     
         }
         return true;
     }
 
-    public static boolean decOFSCond(SimilarityPredicate similarityPredicate){
+    public static boolean decUFSCond(SimilarityPredicate similarityPredicate){
         if(similarityPredicate.el1 instanceof FunctionApplication && similarityPredicate.el2 instanceof FunctionApplication){
             FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
             FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
-            return f1.args.length == f2.args.length && (f1.isOrdered() || f2.isOrdered());
+            return f1.args.length == f2.args.length && (!f1.isOrdered() || !f2.isOrdered());
         } 
         return false;
     }
 
-    public static void decOFSOp(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction){
+    public static void decUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
         if(!f1.isOrdered()){
             List<FunctionApplication> prems = generateInstances(f1.functionSymbol, f1.args);
             for(FunctionApplication prem : prems){
+                Conjunction conj = conjunction.createCopy();
                 decSimOp(
                     (FunctionApplication) prem,
                     (FunctionApplication) f2, 
                     similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conjunction);
-
+                    similarityPredicate.CutValue, conj.constraints);
+                disjunction.add(conj);
             }
         }
         else{
@@ -89,12 +101,11 @@ public class Sim {
                     (FunctionApplication) f1,
                     (FunctionApplication) prem, 
                     similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conjunction);
+                    similarityPredicate.CutValue, conjunction.constraints);
 
             }
         }
     }
-
 
     public static List<FunctionApplication> generateInstances(FunctionSymbol functionSymbol, Term[] args) {
         List<FunctionApplication> instances = new ArrayList<>();

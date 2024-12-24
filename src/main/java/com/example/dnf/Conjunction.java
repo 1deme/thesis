@@ -34,39 +34,6 @@ public class Conjunction {
         } ).collect(Collectors.toList());
     }
 
-    // public boolean apprSolvedForm(){
-
-    //     for(int i = 0; i < constraints.size(); i++){
-    //         SimilarityPredicate curr = constraints.get(i);
-
-    //         if(curr instanceof SimilarityPredicate && curr.el1.isVariable() && curr.el2.isVariable() ){
-    //             for(int j = 0; j < constraints.size(); j++){
-    //                 SimilarityPredicate other = constraints.get(j);
-    //                 if(curr instanceof SimilarityPredicate && curr.el1.isVariable() && curr.el2.isVariable() ){
-    //                     continue;
-    //                 }
-    //                 if(j != i && (other.el1.contains(curr.el1) || other.el1.contains(curr.el2))){
-    //                     return false;
-    //                 }
-    //             }
-    //             continue;
-    //         }
-
-    //         for(int j = i + 1; j < constraints.size(); j++){
-    //             SimilarityPredicate next = constraints.get(j);
-    //             if(!curr.el1.isVariable()){
-    //                 return false;
-    //             }
-    //             if(curr.el2.contains(curr.el1) || next.el1.contains(curr.el1) || next.el2.contains(curr.el1)){
-    //                 return false;
-    //             }
-
-    //         }
-
-    //     }
-    //     return true;
-    // }
-
     public boolean containt(Element el){
         
         for(SimilarityPredicate pc : constraints){
@@ -75,6 +42,10 @@ public class Conjunction {
             }
         }
         return false;
+    }
+
+    public Conjunction createCopy(){
+        return new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
     }
 
     @Override

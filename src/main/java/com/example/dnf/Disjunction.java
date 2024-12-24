@@ -20,18 +20,16 @@ public class Disjunction {
         conjunctions.add(c);
     }
 
-    // public boolean apprSolvedForm(){
-    //     return conjunctions.stream().allMatch(x -> x.apprSolvedForm());
-    // }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < conjunctions.size(); i++) {
+            sb.append("(");
             sb.append(conjunctions.get(i));
             if (i < conjunctions.size() - 1) {
                 sb.append(" ∨ "); 
             }
+            sb.append(")");
         }
         return sb.toString();
     }

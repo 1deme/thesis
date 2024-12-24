@@ -26,6 +26,9 @@ public class FunctionApplication implements Term{
 
     @Override
     public String toString(){
+        if(args.length == 0){
+            return functionSymbol.toString();
+        }
         return functionSymbol + "(" + String.join(", ", Arrays.stream(args).map(Term::toString).toArray(String[]::new)) + ")"; 
     }
 

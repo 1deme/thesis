@@ -6,10 +6,10 @@ import java.util.List;
 import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.FunctionConstant;
 import com.example.constraintElements.FunctionSymbol;
-import com.example.constraintElements.FunctionVariable;
 import com.example.constraintElements.Term;
 import com.example.constraintElements.TermVariable;
 import com.example.dnf.Conjunction;
+import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 
@@ -36,10 +36,15 @@ public class Main {
         pc.add(sim);
         
         Conjunction cc = new Conjunction(pc);
-        Sim.sim(cc);
+        
+        Disjunction disjunction = new Disjunction(new ArrayList<>());
+        disjunction.add(cc);
+        Sim.disjunction = disjunction;
     
-        System.out.println(cc.toString()); 
-        //f(x,y) ~= g(c,b)
+        Sim.solve();
+        System.out.println(Sim.disjunction.toString()); 
+        //(f(x,y) ~= g(c,b) /\  k) \/ C
+        //(f = g /\ x = b /\ y = c) \/ (f = g /\ x = c /\ y = b /\ k) \/ C
 
     }
 }
