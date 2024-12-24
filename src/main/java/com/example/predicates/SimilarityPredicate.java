@@ -2,13 +2,25 @@ package com.example.predicates;
 
 import com.example.constraintElements.*;
 
-public class SimilarityPredicate extends PrimitiveConstraint{
+public class SimilarityPredicate{
+    
+    public Element el1;
+    public Element el2;
 
     public int RelationId;
     public double CutValue;
 
+    public boolean isSolved = false;
+
+    public SimilarityPredicate map(Element from, Element to){
+        el1 = el1.map(from, to);
+        el2 = el2.map(from, to);
+        return this;
+    }
+
     public SimilarityPredicate(Element el1, Element el2, int RelationId, double CutValue){
-        super(el1, el2);
+        this.el1 = el1;
+        this.el2 = el2;
         this.RelationId = RelationId;
         this.CutValue = CutValue;
     }
@@ -23,7 +35,6 @@ public class SimilarityPredicate extends PrimitiveConstraint{
         return this;
     }
 
-    @Override
     public SimilarityPredicate createCopy(){
         return new SimilarityPredicate(el1.createCopy(), el2.createCopy(), RelationId, CutValue);
     }
@@ -32,7 +43,5 @@ public class SimilarityPredicate extends PrimitiveConstraint{
     public String toString(){
         return el1.toString() + " ~=" + (isSolved ? " " : "? ") + Integer.toString(RelationId) + ", " + Double.toString(CutValue) + " " + el2.toString();
     }
-
-    
     
 }

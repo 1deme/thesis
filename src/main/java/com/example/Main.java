@@ -10,7 +10,6 @@ import com.example.constraintElements.FunctionVariable;
 import com.example.constraintElements.Term;
 import com.example.constraintElements.TermVariable;
 import com.example.dnf.Conjunction;
-import com.example.predicates.PrimitiveConstraint;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 
