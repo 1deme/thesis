@@ -2,7 +2,7 @@ package com.example.dnf;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.example.predicates.PrimitiveConstraint;
+import com.example.predicates.SimilarityPredicate;
 
 public class Disjunction {
 
@@ -12,7 +12,7 @@ public class Disjunction {
         this.conjunctions = disjunction;
     }
 
-    public void add(List<PrimitiveConstraint> pc){
+    public void add(List<SimilarityPredicate> pc){
         conjunctions.add(new Conjunction(pc));
     }
 
@@ -20,9 +20,9 @@ public class Disjunction {
         conjunctions.add(c);
     }
 
-    public boolean apprSolvedForm(){
-        return conjunctions.stream().allMatch(x -> x.apprSolvedForm());
-    }
+    // public boolean apprSolvedForm(){
+    //     return conjunctions.stream().allMatch(x -> x.apprSolvedForm());
+    // }
 
     @Override
     public String toString() {

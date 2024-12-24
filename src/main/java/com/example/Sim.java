@@ -3,11 +3,14 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.example.constraintElements.FunctionApplication;
+import com.example.constraintElements.FunctionSymbol;
+import com.example.constraintElements.Term;
 import com.example.constraintElements.TermVariable;
 import com.example.dnf.Conjunction;
 import com.example.predicates.PrimitiveConstraint;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
+import java.util.ArrayList;
 
 public class Sim {
 
@@ -23,6 +26,11 @@ public class Sim {
             if(conjunction.constraints.get(0) instanceof SimilarityPredicate){
                 SimilarityPredicate similarityPredicate = (SimilarityPredicate) conjunction.constraints.remove(0);
                 if(delSimCond(similarityPredicate)){
+                    i = -1;
+                    continue;
+                }
+                if(decOFSCond(similarityPredicate)){
+                    decOFSOp(similarityPredicate, conjunction.constraints);
                     i = -1;
                     continue;
                 }
@@ -52,6 +60,69 @@ public class Sim {
         return true;
     }
 
+    public static boolean decOFSCond(PrimitiveConstraint primitiveConstraint){
+        if(primitiveConstraint.el1 instanceof FunctionApplication && primitiveConstraint.el2 instanceof FunctionApplication){
+            FunctionApplication f1 = (FunctionApplication) primitiveConstraint.el1;
+            FunctionApplication f2 = (FunctionApplication) primitiveConstraint.el2;
+            return f1.args.length == f2.args.length && (f1.isOrdered() || f2.isOrdered());
+        } 
+        return false;
+    }
+
+    public static void decOFSOp(SimilarityPredicate primitiveConstraint, List<SimilarityPredicate> conjunction){
+        FunctionApplication f1 = (FunctionApplication) primitiveConstraint.el1;
+        FunctionApplication f2 = (FunctionApplication) primitiveConstraint.el2;
+        if(!f1.isOrdered()){
+            List<FunctionApplication> prems = generateInstances(f1.functionSymbol, f1.args);
+            for(FunctionApplication prem : prems){
+                decSimOp(
+                    (FunctionApplication) prem,
+                    (FunctionApplication) f2, 
+                    primitiveConstraint.RelationId,
+                    primitiveConstraint.CutValue, conjunction);
+
+            }
+        }
+        else{
+            List<FunctionApplication> prems = generateInstances(f2.functionSymbol, f2.args);
+            for(FunctionApplication prem : prems){
+                decSimOp(
+                    (FunctionApplication) f1,
+                    (FunctionApplication) prem, 
+                    primitiveConstraint.RelationId,
+                    primitiveConstraint.CutValue, conjunction);
+
+            }
+        }
+    }
+
+
+    public static List<FunctionApplication> generateInstances(FunctionSymbol functionSymbol, Term[] args) {
+        List<FunctionApplication> instances = new ArrayList<>();
+        generatePermutations(args, 0, instances, functionSymbol);
+        return instances;
+    }
+
+    private static void generatePermutations(Term[] args, int start, List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
+        if (start == args.length - 1) {
+            // Add a new instance with the current permutation
+            instances.add(new FunctionApplication(functionSymbol, args.clone(), false));
+            return;
+        }
+        for (int i = start; i < args.length; i++) {
+            swap(args, i, start);
+            generatePermutations(args, start + 1, instances, functionSymbol);
+            swap(args, i, start); // backtrack
+        }
+    }
+
+    private static void swap(Term[] args, int i, int j) {
+        Term temp = args[i];
+        args[i] = args[j];
+        args[j] = temp;
+    }
+
+
     public static boolean occEqCond(PrimitiveConstraint primitiveConstraint){
         return !(primitiveConstraint.el1 instanceof TermVariable) 
             && primitiveConstraint.el1 != primitiveConstraint.el2
@@ -80,20 +151,20 @@ public class Sim {
                  && com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) >= similarityPredicate.CutValue;
     }
 
-    private static void decSimOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, List<PrimitiveConstraint> conjunction) {
+    private static void decSimOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, List<SimilarityPredicate> conjunction) {
          for(int i = f1.args.length - 1; i >= 0; i--){
             conjunction.add(new SimilarityPredicate(f1.args[i], f2.args[i], relId, cutVal));
         }
         conjunction.add(new SimilarityPredicate(f1.functionSymbol, f2.functionSymbol, relId, cutVal));
     }
 
-    private static void oriSimOp(SimilarityPredicate similarityPredicate, List<PrimitiveConstraint> conjunction) {
+    private static void oriSimOp(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
         conjunction.add(
             new SimilarityPredicate(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue)
         );
     }
 
-    private static boolean elimSimCond(SimilarityPredicate similarityPredicate, List<PrimitiveConstraint> conjunction) {
+    private static boolean elimSimCond(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
         boolean notInEl2 = similarityPredicate.el2.contains(similarityPredicate.el1);
         if(notInEl2 == true){
             return false;
@@ -114,7 +185,7 @@ public class Sim {
     }
     
     private static void elimSimOp(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
-        Predicate<PrimitiveConstraint> p = x -> x instanceof SimilarityPredicate && ((SimilarityPredicate)x).CutValue == similarityPredicate.CutValue && ((SimilarityPredicate)x).RelationId == similarityPredicate.RelationId;
+        Predicate<SimilarityPredicate> p = x -> x instanceof SimilarityPredicate && ((SimilarityPredicate)x).CutValue == similarityPredicate.CutValue && ((SimilarityPredicate)x).RelationId == similarityPredicate.RelationId;
         conjunction.map(similarityPredicate.el1, similarityPredicate.el2, p);
         conjunction.constraints.add(similarityPredicate);
     }

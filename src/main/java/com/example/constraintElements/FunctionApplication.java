@@ -6,10 +6,12 @@ public class FunctionApplication implements Term{
 
     public FunctionSymbol functionSymbol;
     public Term[] args;
+    private boolean isOrdered;
 
-    public FunctionApplication(FunctionSymbol functionSymbol, Term[] args){
+    public FunctionApplication(FunctionSymbol functionSymbol, Term[] args, boolean isOrdered){
         this.functionSymbol = functionSymbol;
         this.args = args;
+        this.isOrdered = isOrdered;
     }
 
     @Override
@@ -19,7 +21,7 @@ public class FunctionApplication implements Term{
         for(int i = 0; i < args.length; i++){
             newArgs[i] = (Term) args[i].map(from, to);            
         }
-        return new FunctionApplication(newFunctionSymbol, newArgs);
+        return new FunctionApplication(newFunctionSymbol, newArgs, isOrdered);
     }
 
     @Override
@@ -55,10 +57,11 @@ public class FunctionApplication implements Term{
         for(int i = 0; i < args.length; i++){
             copy[i] = (Term) args[i].createCopy();
         }
-        return new FunctionApplication(functionSymbol.createCopy(), copy);
+        return new FunctionApplication(functionSymbol.createCopy(), copy, isOrdered);
     }
 
-    
-
+    public boolean isOrdered(){
+        return isOrdered;
+    }
     
 }

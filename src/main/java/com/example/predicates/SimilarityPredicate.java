@@ -13,12 +13,12 @@ public class SimilarityPredicate extends PrimitiveConstraint{
         this.CutValue = CutValue;
     }
 
-    public PrimitiveConstraint setRelationId(int relationId){
+    public SimilarityPredicate setRelationId(int relationId){
         this.RelationId = relationId;
         return this;
     }
 
-    public PrimitiveConstraint setCutValue(float CutValue){
+    public SimilarityPredicate setCutValue(float CutValue){
         this.CutValue = CutValue;
         return this;
     }
