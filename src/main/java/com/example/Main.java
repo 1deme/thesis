@@ -42,9 +42,11 @@ public class Main {
         Sim.disjunction = disjunction;
     
         Sim.solve();
-        System.out.println(Sim.disjunction.toString()); 
+        System.out.println(Sim.disjunction.toString());
+
         //(f(x,y) ~= g(c,b) /\  k) \/ C
         //(f = g /\ x = b /\ y = c) \/ (f = g /\ x = c /\ y = b /\ k) \/ C
+
 
     }
 }
