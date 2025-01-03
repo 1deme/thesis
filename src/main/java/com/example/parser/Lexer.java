@@ -39,7 +39,8 @@ public class Lexer {
             position++;
         }
         String word = input.substring(start, position);
-        return word.endsWith("_u") || word.endsWith("_o")
+        System.out.println(word);
+        return word.endsWith("u") || word.endsWith("o")
                 ? function(word)
                 : new Token(TokenType.VARIABLE, word);
     }
