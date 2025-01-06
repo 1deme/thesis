@@ -42,7 +42,9 @@ public class Main {
         Sim.disjunction = disjunction;
     
         Sim.solve();
-        //System.out.println(Sim.disjunction.toString());
+
+
+
 
     }
 }
