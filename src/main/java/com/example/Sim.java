@@ -147,7 +147,7 @@ public class Sim {
         FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
         if(!f1.isOrdered()){
-            List<FunctionApplication> prems = com.example.resources.Permutations.generateInstances(f1.functionSymbol, f1.args);
+            List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f1.functionSymbol, f1.args);
             FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
                 Conjunction conj = conjunction.createCopy();
@@ -161,7 +161,7 @@ public class Sim {
             decSimOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
         }
         else{
-            List<FunctionApplication> prems = com.example.resources.Permutations.generateInstances(f2.functionSymbol, f2.args);
+            List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f2.functionSymbol, f2.args);
             FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
                 Conjunction conj = conjunction.createCopy();
