@@ -14,17 +14,21 @@ public class relationCollection {
     }
 
     public static Double lookup(Element el1, Element el2, int relId) {
+        if(el1.toString().equals(el2.toString())){
+            return 1.0;
+        }
 
         for(Relation rel : collection){
             if(
                 rel.relId == relId 
-                && ((rel.el1 == el1 && rel.el2 == el2) || (rel.el1 == el2 && rel.el2 == el1))
+                && ((rel.el1.toString().equals(el1.toString()) && rel.el2.toString().equals(el2.toString())) ||
+                 (rel.el1.toString().equals(el2.toString()) && rel.el2.toString().equals(el1.toString())))
             ){
                 return rel.value;
             }
         }
         
-        return 2.0;
+        return .0;
     }
     
 

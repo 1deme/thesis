@@ -16,8 +16,8 @@ public class Sim {
     static relationCollection relationCollection = new relationCollection();
 
     public static boolean solve(){
-        for(Conjunction d : disjunction.conjunctions){
-            if(sim(d)){
+        while(disjunction.conjunctions.size() != 0){
+            if(sim(disjunction.conjunctions.remove(0))){
                 return true;
             }
         }
@@ -26,32 +26,27 @@ public class Sim {
 
     public static boolean sim(Conjunction conjunction){
         
-        for(int i = 0; i < conjunction.constraints.size(); i++){
+        while(conjunction.constraints.size() != 0){
 
             SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
 
             if(delSimCond(similarityPredicate)){
-                i = -1;
                 continue;
             }
             if(decUFSCond(similarityPredicate)){
                 decUFSOp(similarityPredicate, conjunction);
-                i = -1;
                 continue;
             }
             if(decSimCond(similarityPredicate)){
                 decSimOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
-                i = -1;
                 continue;
             }
             if(oriSimCond(similarityPredicate)){
                 oriSimOp(similarityPredicate, conjunction.constraints);
-                i = -1;
                 continue;
             }
             if(elimSimCond(similarityPredicate, conjunction.constraints)){
                 elimSimOp(similarityPredicate, conjunction);
-                i = -1;
                 continue;
             }
             if(conflSimCond(similarityPredicate) || mismSimCond(similarityPredicate) || occSimCond(similarityPredicate)){
@@ -83,7 +78,6 @@ public class Sim {
             && ((FunctionApplication )similarityPredicate.el1).args.length != ((FunctionApplication )similarityPredicate.el2).args.length;   
     }
 
-
     public static boolean decSimCond(SimilarityPredicate similarityPredicate){
         return
             similarityPredicate.el1 instanceof FunctionApplication &&
@@ -111,25 +105,21 @@ public class Sim {
     }
 
     private static boolean elimSimCond(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
-        boolean notInEl2 = similarityPredicate.el2.contains(similarityPredicate.el1);
-        if(notInEl2 == true){
-            return false;
-        }
-        for(SimilarityPredicate pc : conjunction){
-            if(pc instanceof SimilarityPredicate){
-                SimilarityPredicate sp = (SimilarityPredicate) pc;
-                if(
-                    sp.RelationId == similarityPredicate.RelationId &&
-                    sp.CutValue == similarityPredicate.CutValue &&
-                    (pc.el1.contains(similarityPredicate.el1) || pc.el2.contains(similarityPredicate.el1))){
-                    return true;
-                }
-            }
-            
-        }
-        return false;
+        return !similarityPredicate.el2.contains(similarityPredicate.el1);
+        // boolean notInEl2 = similarityPredicate.el2.contains(similarityPredicate.el1);
+        // if(notInEl2){
+        //     return false;
+        // }
+        // for(SimilarityPredicate pc : conjunction){
+        //     if(
+        //         pc.RelationId == similarityPredicate.RelationId &&
+        //         pc.CutValue == similarityPredicate.CutValue &&
+        //         (pc.el1.contains(similarityPredicate.el1) || pc.el2.contains(similarityPredicate.el1))){
+        //             return true;
+        //     }
+        // }
+        // return false;
     }
-
 
     private static void decSimOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, List<SimilarityPredicate> conjunction) {
          for(int i = f1.args.length - 1; i >= 0; i--){
@@ -147,8 +137,9 @@ public class Sim {
     private static void elimSimOp(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
         Predicate<SimilarityPredicate> p = x -> x instanceof SimilarityPredicate && ((SimilarityPredicate)x).CutValue == similarityPredicate.CutValue && ((SimilarityPredicate)x).RelationId == similarityPredicate.RelationId;
         System.out.println(similarityPredicate.el1 + "->" + similarityPredicate.el2);
-        conjunction.map(similarityPredicate.el1, similarityPredicate.el2, p);
         conjunction.constraints.add(similarityPredicate);
+        conjunction.map(similarityPredicate.el1, similarityPredicate.el2, p);
+        
     }
 
 
@@ -157,6 +148,7 @@ public class Sim {
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
         if(!f1.isOrdered()){
             List<FunctionApplication> prems = com.example.resources.Permutations.generateInstances(f1.functionSymbol, f1.args);
+            FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
                 Conjunction conj = conjunction.createCopy();
                 decSimOp(
@@ -166,17 +158,21 @@ public class Sim {
                     similarityPredicate.CutValue, conj.constraints);
                 disjunction.add(conj);
             }
+            decSimOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
         }
         else{
             List<FunctionApplication> prems = com.example.resources.Permutations.generateInstances(f2.functionSymbol, f2.args);
+            FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
+                Conjunction conj = conjunction.createCopy();
                 decSimOp(
                     (FunctionApplication) f1,
                     (FunctionApplication) prem, 
                     similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conjunction.constraints);
-
+                    similarityPredicate.CutValue, conj.constraints);
+                    disjunction.add(conj);
             }
+            decSimOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
         }
     }
 

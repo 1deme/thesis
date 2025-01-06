@@ -28,9 +28,9 @@ public class Main {
 
         FunctionApplication fxy = new FunctionApplication(f, new Term[]{x, y}, false);
         FunctionApplication gbc = new FunctionApplication(g, new Term[]{bTerm, cTerm}, false);
-        SimilarityPredicate sim = new SimilarityPredicate(fxy, gbc, 1, 0.8);
+        SimilarityPredicate sim = new SimilarityPredicate(fxy, gbc, 1, 0.7);
 
-        relationCollection.add(f, g, 1, 0.7);
+        relationCollection.add(f, g, 1, 0.8);
 
         List<SimilarityPredicate> pc = new ArrayList<>();
         pc.add(sim);
