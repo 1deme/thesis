@@ -46,7 +46,9 @@ public class FunctionApplication implements Term{
     }
 
     @Override
-    public boolean isAtomic(){return false;}
+    public boolean isAtomic(){
+        return args.length == 0;
+    }
 
     
     @Override
