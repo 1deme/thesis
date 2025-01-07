@@ -1,9 +1,8 @@
 package com.example;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.example.constraintElements.FunctionApplication;
-import com.example.constraintElements.TermVariable;
+import com.example.constraintElements.variable;
 import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
@@ -30,118 +29,138 @@ public class Sim {
 
             SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
 
-            if(delSimCond(similarityPredicate)){
+            if(delVarCond(similarityPredicate)){
+                continue;
+            }
+
+            if(decOfSCond(similarityPredicate)){
+                decOfSOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
                 continue;
             }
             if(decUFSCond(similarityPredicate)){
                 decUFSOp(similarityPredicate, conjunction);
                 continue;
             }
-            if(decSimCond(similarityPredicate)){
-                decSimOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
+            if(oriUFSCond(similarityPredicate)){
+                oriUFSOp(similarityPredicate, conjunction);
                 continue;
             }
-            if(oriSimCond(similarityPredicate)){
-                oriSimOp(similarityPredicate, conjunction.constraints);
+            if(oriVarCond(similarityPredicate)){
+                oriVarOp(similarityPredicate, conjunction);
                 continue;
             }
-            if(elimSimCond(similarityPredicate, conjunction.constraints)){
-                elimSimOp(similarityPredicate, conjunction);
-                continue;
-            }
-            if(conflSimCond(similarityPredicate) || mismSimCond(similarityPredicate) || occSimCond(similarityPredicate)){
-                conjunction.constraints.clear();
+            if(ConfFSCond(similarityPredicate) || ConfUFSCond(similarityPredicate) || 
+                ConfOFSCond(similarityPredicate) || CheckOccCond(similarityPredicate) )
+            {
                 return false;
             }
+            if(SolSUCond(similarityPredicate)){
+                SolSUOp(similarityPredicate, conjunction);
+                continue;
+            }
+            throw new UnsupportedOperationException("Pattern not recognized");
         }
         return true;
     }
 
-    public static boolean decUFSCond(SimilarityPredicate similarityPredicate){
-        if(similarityPredicate.el1 instanceof FunctionApplication && similarityPredicate.el2 instanceof FunctionApplication){
-            FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
-            FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
-            return !f1.isAtomic() && f1.args.length == f2.args.length && (!f1.isOrdered() || !f2.isOrdered());
-        } 
-        return false;
+    private static boolean delVarCond(SimilarityPredicate similarityPredicate) {
+        return similarityPredicate.el1.isVariable() && similarityPredicate.el1.equals(similarityPredicate.el2);
     }
 
-    public static boolean occSimCond(SimilarityPredicate similarityPredicate){
-        return !(similarityPredicate.el1 instanceof TermVariable) 
-            && similarityPredicate.el1 != similarityPredicate.el2
-            && similarityPredicate.el2.contains(similarityPredicate.el1);
-    }
-
-    public static boolean mismSimCond(SimilarityPredicate similarityPredicate){
-        return (similarityPredicate.el1 instanceof FunctionApplication 
-            && similarityPredicate.el2 instanceof FunctionApplication) 
-            && ((FunctionApplication )similarityPredicate.el1).args.length != ((FunctionApplication )similarityPredicate.el2).args.length;   
-    }
-
-    public static boolean decSimCond(SimilarityPredicate similarityPredicate){
-        return
+    private static boolean decOfSCond(SimilarityPredicate similarityPredicate) {
+        return 
             similarityPredicate.el1 instanceof FunctionApplication &&
             similarityPredicate.el2 instanceof FunctionApplication &&
-            !similarityPredicate.el1.isAtomic() &&
-            ((FunctionApplication) similarityPredicate.el1).args.length == ((FunctionApplication) similarityPredicate.el2).args.length;
-    }
-
-    public static boolean oriSimCond(SimilarityPredicate similarityPredicate){
-        return similarityPredicate.el2.isVariable() && !similarityPredicate.el1.isVariable();
-    }
-
-    private static boolean delSimCond(SimilarityPredicate similarityPredicate) {
-        return 
-            similarityPredicate.el1.isAtomic() &&
-            similarityPredicate.el2.isAtomic() &&
+            similarityPredicate.el1.isOrdered() &&
+            similarityPredicate.el2.isOrdered() &&
+            similarityPredicate.el1.arity() == similarityPredicate.el2.arity() &&
             com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) >= similarityPredicate.CutValue;
     }
 
-    private static boolean conflSimCond(SimilarityPredicate similarityPredicate) {
+    private static boolean decUFSCond(SimilarityPredicate similarityPredicate) {
         return 
-            similarityPredicate.el1.isAtomic() && 
-            similarityPredicate.el2.isAtomic() &&
+            similarityPredicate.el1 instanceof FunctionApplication &&
+            similarityPredicate.el2 instanceof FunctionApplication &&
+            !similarityPredicate.el1.isOrdered() &&
+            !similarityPredicate.el2.isOrdered() &&
+            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) >= similarityPredicate.CutValue;
+    }
+
+    private static boolean oriUFSCond(SimilarityPredicate similarityPredicate){
+        return 
+            similarityPredicate.el1 instanceof FunctionApplication &&
+            similarityPredicate.el2 instanceof FunctionApplication &&
+            !similarityPredicate.el1.isOrdered() &&
+            !similarityPredicate.el2.isOrdered() &&
+            similarityPredicate.el1.arity() < similarityPredicate.el2.arity();
+    }
+
+    public static boolean oriVarCond(SimilarityPredicate similarityPredicate){
+        return !similarityPredicate.el1.isVariable() && similarityPredicate.el2.isVariable();
+    }
+
+    public static boolean ConfFSCond(SimilarityPredicate similarityPredicate){
+        return 
+            similarityPredicate.el1 instanceof FunctionApplication &&
+            similarityPredicate.el2 instanceof FunctionApplication &&
+            (
+                (similarityPredicate.el1.isOrdered() && !similarityPredicate.el2.isOrdered()) ||  
+                (!similarityPredicate.el1.isOrdered() && similarityPredicate.el2.isOrdered())
+            );
+    }
+
+    public static boolean ConfUFSCond(SimilarityPredicate similarityPredicate){
+        return 
+            similarityPredicate.el1 instanceof FunctionApplication &&
+            similarityPredicate.el2 instanceof FunctionApplication &&
+            !similarityPredicate.el1.isOrdered() &&
+            !similarityPredicate.el2.isOrdered() &&
             com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) < similarityPredicate.CutValue;
     }
 
-    private static boolean elimSimCond(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
-        return !similarityPredicate.el2.contains(similarityPredicate.el1);
-        // boolean notInEl2 = similarityPredicate.el2.contains(similarityPredicate.el1);
-        // if(notInEl2){
-        //     return false;
-        // }
-        // for(SimilarityPredicate pc : conjunction){
-        //     if(
-        //         pc.RelationId == similarityPredicate.RelationId &&
-        //         pc.CutValue == similarityPredicate.CutValue &&
-        //         (pc.el1.contains(similarityPredicate.el1) || pc.el2.contains(similarityPredicate.el1))){
-        //             return true;
-        //     }
-        // }
-        // return false;
+    public static boolean ConfOFSCond(SimilarityPredicate similarityPredicate){
+        return 
+            similarityPredicate.el1 instanceof FunctionApplication &&
+            similarityPredicate.el2 instanceof FunctionApplication &&
+            similarityPredicate.el1.isOrdered() &&
+            similarityPredicate.el2.isOrdered() &&
+            (
+                similarityPredicate.el1.arity() != similarityPredicate.el2.arity() ||
+                com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) < similarityPredicate.CutValue
+            );
     }
 
-    private static void decSimOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, List<SimilarityPredicate> conjunction) {
-         for(int i = f1.args.length - 1; i >= 0; i--){
-            conjunction.add(new SimilarityPredicate(f1.args[i], f2.args[i], relId, cutVal));
-        }
-        conjunction.add(new SimilarityPredicate(f1.functionSymbol, f2.functionSymbol, relId, cutVal));
+    public static boolean CheckOccCond(SimilarityPredicate similarityPredicate){
+        return
+            similarityPredicate.el1.isVariable() &&
+            !similarityPredicate.el2.equals(similarityPredicate.el1) &&
+            similarityPredicate.el2.contains(similarityPredicate.el1);
     }
 
-    private static void oriSimOp(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
-        conjunction.add(
-            new SimilarityPredicate(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue)
+    public static boolean SolSUCond(SimilarityPredicate similarityPredicate){
+        return 
+            similarityPredicate.el1.isVariable() &&
+            !similarityPredicate.el1.equals(similarityPredicate.el2) &&
+            similarityPredicate.el2.contains(similarityPredicate.el1);
+    }
+
+    public static void oriVarOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
+        conjunction.constraints.add(
+            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.RelationId, similarityPredicate.CutValue)
         );
     }
-    
-    private static void elimSimOp(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
-        Predicate<SimilarityPredicate> p = x -> x instanceof SimilarityPredicate && ((SimilarityPredicate)x).CutValue == similarityPredicate.CutValue && ((SimilarityPredicate)x).RelationId == similarityPredicate.RelationId;
-        System.out.println(similarityPredicate.el1 + "->" + similarityPredicate.el2);
-        conjunction.constraints.add(similarityPredicate);
-        conjunction.map(similarityPredicate.el1, similarityPredicate.el2, p);
-        
-    }
 
+    public static void decOfSOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, Conjunction conjunction){
+        for(int i = 0; i < f1.arity(); i++){
+            conjunction.constraints.add(
+                new SimilarityPredicate(f1.args[i], f2.args[i], relId, cutVal)
+            );
+        }
+        conjunction.proximtyDegree = Math.min(
+            conjunction.proximtyDegree,
+            com.example.relations.relationCollection.lookup(f1, f2, relId)
+        );
+    }
 
     public static void decUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
@@ -151,29 +170,39 @@ public class Sim {
             FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
                 Conjunction conj = conjunction.createCopy();
-                decSimOp(
+                decOfSOp(
                     (FunctionApplication) prem,
                     (FunctionApplication) f2, 
                     similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conj.constraints);
+                    similarityPredicate.CutValue, conj);
                 disjunction.add(conj);
             }
-            decSimOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
+            decOfSOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
         }
         else{
             List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f2.functionSymbol, f2.args);
             FunctionApplication mem = prems.remove(0);
             for(FunctionApplication prem : prems){
                 Conjunction conj = conjunction.createCopy();
-                decSimOp(
+                decOfSOp(
                     (FunctionApplication) f1,
                     (FunctionApplication) prem, 
                     similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conj.constraints);
+                    similarityPredicate.CutValue, conj);
                     disjunction.add(conj);
             }
-            decSimOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction.constraints);
+            decOfSOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
         }
     }
 
+    public static void oriUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
+        conjunction.constraints.add(
+            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.RelationId, similarityPredicate.CutValue)
+        );
+    }
+
+    public static void SolSUOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
+        conjunction.solution.add(similarityPredicate.el1.toString() + " -> " + similarityPredicate.el2.toString());
+        conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
+    }
 }

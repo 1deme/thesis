@@ -19,7 +19,7 @@ public class Permutations {
     private static void generatePermutations(Term[] args, int start, List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
         if (start == args.length - 1) {
             // Add a new instance with the current permutation
-            instances.add(new FunctionApplication(functionSymbol, args.clone(), false));
+            instances.add(new FunctionApplication(functionSymbol, args.clone()));
             return;
         }
         for (int i = start; i < args.length; i++) {

@@ -3,8 +3,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.example.constraintElements.Element;
-
+import com.example.constraintElements.Term;
+import com.example.constraintElements.variable;
 import com.example.predicates.SimilarityPredicate;
 
 import java.util.LinkedList;
@@ -13,16 +13,18 @@ import java.util.LinkedList;
 public class Conjunction {
 
     public List<SimilarityPredicate> constraints = new LinkedList<SimilarityPredicate>();
+    public double proximtyDegree = 1;
+    public List<String> solution = new LinkedList<>();
 
     public Conjunction(List<SimilarityPredicate> conjunction){
         this.constraints = conjunction;
     }
 
-    public void map(Element from, Element to){
+    public void map(variable from, Term to){
         constraints.stream().map(x -> x.map(from, to)).collect(Collectors.toList());
     }
 
-    public void map(Element from, Element to, Predicate<SimilarityPredicate> cond){
+    public void map(variable from, Term to, Predicate<SimilarityPredicate> cond){
         
         constraints.stream().map(x -> {
             if(cond.test(x)){
@@ -34,7 +36,7 @@ public class Conjunction {
         } ).collect(Collectors.toList());
     }
 
-    public boolean containt(Element el){
+    public boolean containt(Term el){
         
         for(SimilarityPredicate pc : constraints){
             if(pc.el1.contains(el) || pc.el2.contains(el)){

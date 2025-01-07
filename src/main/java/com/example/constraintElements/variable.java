@@ -1,9 +1,9 @@
 package com.example.constraintElements;
 
-public class TermVariable implements Term {
+public class variable implements Term {
     char name;
 
-    public TermVariable(char name){
+    public variable(char name){
         this.name = name;
     }
 
@@ -13,7 +13,7 @@ public class TermVariable implements Term {
     }
 
     @Override
-    public Element map(Element from, Element to){
+    public Term map(variable from, Term to){
         if(this.equals(from)){
             return to;
         }
@@ -21,7 +21,7 @@ public class TermVariable implements Term {
     }
 
     @Override
-    public boolean contains(Element el) {
+    public boolean contains(Term el) {
         return el == this;
     }
 
@@ -31,8 +31,8 @@ public class TermVariable implements Term {
     }
 
     @Override
-    public Element createCopy() {
-        return new TermVariable(name);
+    public Term createCopy() {
+        return new variable(name);
     }
 
     @Override
