@@ -50,6 +50,10 @@ public class Conjunction {
         return new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
     }
 
+    public void add(SimilarityPredicate pc){
+        constraints.add(pc);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

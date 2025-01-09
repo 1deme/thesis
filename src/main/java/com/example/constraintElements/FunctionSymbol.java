@@ -18,5 +18,8 @@ public class FunctionSymbol{
         return new FunctionSymbol(name, isOrdered);
     }
 
+    public FunctionSymbol clone(){
+        return new FunctionSymbol(name, isOrdered);
+    }
 
 }

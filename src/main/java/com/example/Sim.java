@@ -1,18 +1,24 @@
 package com.example;
 import java.util.List;
+import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
+import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.variable;
 import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Sim {
 
     static Disjunction disjunction = new Disjunction(new ArrayList<>());
     static relationCollection relationCollection = new relationCollection();
+    public static Set<Character> allFunctionSymbols = new HashSet<>();
+
 
     public static void solve(){
         while(disjunction.conjunctions.size() != 0){
@@ -31,7 +37,7 @@ public class Sim {
             }
 
             if(decOfSCond(similarityPredicate)){
-                decOfSOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
+                decOfSOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.CutValue, conjunction);
                 continue;
             }
             if(decUFSCond(similarityPredicate)){
@@ -143,14 +149,14 @@ public class Sim {
 
     public static void oriVarOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         conjunction.constraints.add(
-            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.RelationId, similarityPredicate.CutValue)
+            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.CutValue)
         );
     }
 
-    public static void decOfSOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, Conjunction conjunction){
+    public static void decOfSOp(FunctionApplication f1, FunctionApplication f2, double cutVal, Conjunction conjunction){
         for(int i = 0; i < f1.arity(); i++){
             conjunction.constraints.add(
-                new SimilarityPredicate(f1.args[i], f2.args[i], relId, cutVal)
+                new SimilarityPredicate(f1.args[i], f2.args[i], cutVal)
             );
         }
         conjunction.proximtyDegree = Math.min(
@@ -162,39 +168,24 @@ public class Sim {
     public static void decUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
-        if(!f1.isOrdered()){
-            List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f1.functionSymbol, f1.args);
-            FunctionApplication mem = prems.remove(0);
-            for(FunctionApplication prem : prems){
-                Conjunction conj = conjunction.createCopy();
-                decOfSOp(
-                    (FunctionApplication) prem,
-                    (FunctionApplication) f2, 
-                    similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conj);
-                disjunction.add(conj);
-            }
-            decOfSOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
+        List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f1.functionSymbol, Arrays.copyOf(f1.args, f2.arity()));
+        FunctionApplication mem = prems.remove(0);
+        for(FunctionApplication prem : prems){
+            Conjunction conj = conjunction.createCopy();
+            decOfSOp(
+                (FunctionApplication) prem,
+                (FunctionApplication) f2, 
+                similarityPredicate.CutValue, conj);
+            disjunction.add(conj);
         }
-        else{
-            List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f2.functionSymbol, f2.args);
-            FunctionApplication mem = prems.remove(0);
-            for(FunctionApplication prem : prems){
-                Conjunction conj = conjunction.createCopy();
-                decOfSOp(
-                    (FunctionApplication) f1,
-                    (FunctionApplication) prem, 
-                    similarityPredicate.RelationId,
-                    similarityPredicate.CutValue, conj);
-                    disjunction.add(conj);
-            }
-            decOfSOp(mem, f2, similarityPredicate.RelationId, similarityPredicate.CutValue, conjunction);
-        }
+        decOfSOp(mem, f2, similarityPredicate.CutValue, conjunction);
+        
+
     }
 
     public static void oriUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         conjunction.constraints.add(
-            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.RelationId, similarityPredicate.CutValue)
+            new SimilarityPredicate(similarityPredicate.el2, similarityPredicate.el1, similarityPredicate.CutValue)
         );
     }
 
