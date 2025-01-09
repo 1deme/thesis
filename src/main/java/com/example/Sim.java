@@ -14,13 +14,10 @@ public class Sim {
     static Disjunction disjunction = new Disjunction(new ArrayList<>());
     static relationCollection relationCollection = new relationCollection();
 
-    public static boolean solve(){
+    public static void solve(){
         while(disjunction.conjunctions.size() != 0){
-            if(sim(disjunction.conjunctions.remove(0))){
-                return true;
-            }
+            sim(disjunction.conjunctions.remove(0));
         }
-        return false;
     }
 
     public static boolean sim(Conjunction conjunction){
@@ -74,7 +71,7 @@ public class Sim {
             similarityPredicate.el1.isOrdered() &&
             similarityPredicate.el2.isOrdered() &&
             similarityPredicate.el1.arity() == similarityPredicate.el2.arity() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) >= similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) >= similarityPredicate.CutValue;
     }
 
     private static boolean decUFSCond(SimilarityPredicate similarityPredicate) {
@@ -83,7 +80,7 @@ public class Sim {
             similarityPredicate.el2 instanceof FunctionApplication &&
             !similarityPredicate.el1.isOrdered() &&
             !similarityPredicate.el2.isOrdered() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) >= similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) >= similarityPredicate.CutValue;
     }
 
     private static boolean oriUFSCond(SimilarityPredicate similarityPredicate){
@@ -115,7 +112,7 @@ public class Sim {
             similarityPredicate.el2 instanceof FunctionApplication &&
             !similarityPredicate.el1.isOrdered() &&
             !similarityPredicate.el2.isOrdered() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) < similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) < similarityPredicate.CutValue;
     }
 
     public static boolean ConfOFSCond(SimilarityPredicate similarityPredicate){
@@ -126,7 +123,7 @@ public class Sim {
             similarityPredicate.el2.isOrdered() &&
             (
                 similarityPredicate.el1.arity() != similarityPredicate.el2.arity() ||
-                com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2, similarityPredicate.RelationId) < similarityPredicate.CutValue
+                com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) < similarityPredicate.CutValue
             );
     }
 
@@ -158,7 +155,7 @@ public class Sim {
         }
         conjunction.proximtyDegree = Math.min(
             conjunction.proximtyDegree,
-            com.example.relations.relationCollection.lookup(f1, f2, relId)
+            com.example.relations.relationCollection.lookup(f1, f2)
         );
     }
 
