@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
-import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.variable;
 import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
@@ -15,8 +14,8 @@ import java.util.HashSet;
 
 public class Sim {
 
-    static Disjunction disjunction = new Disjunction(new ArrayList<>());
-    static relationCollection relationCollection = new relationCollection();
+    public static Disjunction disjunction = new Disjunction(new ArrayList<>());
+    public static relationCollection relationCollection = new relationCollection();
     public static Set<Character> allFunctionSymbols = new HashSet<>();
 
 
@@ -30,12 +29,13 @@ public class Sim {
         
         while(conjunction.constraints.size() != 0){
 
+            System.out.println(conjunction);
+
             SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
 
             if(delVarCond(similarityPredicate)){
                 continue;
             }
-
             if(decOfSCond(similarityPredicate)){
                 decOfSOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.CutValue, conjunction);
                 continue;
@@ -52,17 +52,18 @@ public class Sim {
                 oriVarOp(similarityPredicate, conjunction);
                 continue;
             }
+            if(SolSUCond(similarityPredicate)){
+                SolSUOp(similarityPredicate, conjunction);
+                continue;
+            }
             if(ConfFSCond(similarityPredicate) || ConfUFSCond(similarityPredicate) || 
                 ConfOFSCond(similarityPredicate) || CheckOccCond(similarityPredicate) )
             {
                 return false;
             }
-            if(SolSUCond(similarityPredicate)){
-                SolSUOp(similarityPredicate, conjunction);
-                continue;
-            }
             throw new UnsupportedOperationException("Pattern not recognized");
         }
+        System.out.println(conjunction.solution + " " + conjunction.proximtyDegree);
         return true;
     }
 
@@ -144,7 +145,7 @@ public class Sim {
         return 
             similarityPredicate.el1.isVariable() &&
             !similarityPredicate.el1.equals(similarityPredicate.el2) &&
-            similarityPredicate.el2.contains(similarityPredicate.el1);
+            !similarityPredicate.el2.contains(similarityPredicate.el1);
     }
 
     public static void oriVarOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){

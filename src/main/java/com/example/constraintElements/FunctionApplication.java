@@ -7,6 +7,11 @@ public class FunctionApplication implements Term{
     public FunctionSymbol functionSymbol;
     public Term[] args;
 
+    public FunctionApplication(char name, boolean isOrdered, Term[] args){
+        this.functionSymbol = new FunctionSymbol(name, isOrdered);
+        this.args = args;
+    }
+
     public FunctionApplication(FunctionSymbol functionSymbol, Term[] args){
         this.functionSymbol = functionSymbol;
         this.args = args;

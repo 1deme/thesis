@@ -2,8 +2,6 @@ package com.example.relations;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 
 public class relationCollection {

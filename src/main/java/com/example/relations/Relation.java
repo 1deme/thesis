@@ -1,6 +1,5 @@
 package com.example.relations;
 
-import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 
 public class Relation {
