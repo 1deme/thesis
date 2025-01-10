@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
-import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.variable;
 import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
@@ -41,12 +40,12 @@ public class Sim {
                 decOfSOp((FunctionApplication) similarityPredicate.el1, (FunctionApplication) similarityPredicate.el2, similarityPredicate.CutValue, conjunction);
                 continue;
             }
-            if(decUFSCond(similarityPredicate)){
-                decUFSOp(similarityPredicate, conjunction);
-                continue;
-            }
             if(oriUFSCond(similarityPredicate)){
                 oriUFSOp(similarityPredicate, conjunction);
+                continue;
+            }
+            if(decUFSCond(similarityPredicate)){
+                decUFSOp(similarityPredicate, conjunction);
                 continue;
             }
             if(oriVarCond(similarityPredicate)){
