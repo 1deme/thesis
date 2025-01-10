@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
+import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.variable;
 import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
@@ -78,7 +79,11 @@ public class Sim {
             similarityPredicate.el1.isOrdered() &&
             similarityPredicate.el2.isOrdered() &&
             similarityPredicate.el1.arity() == similarityPredicate.el2.arity() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) >= similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(
+                ((FunctionApplication) similarityPredicate.el1).functionSymbol,
+                ((FunctionApplication) similarityPredicate.el2).functionSymbol
+            )
+             >= similarityPredicate.CutValue;
     }
 
     private static boolean decUFSCond(SimilarityPredicate similarityPredicate) {
@@ -87,7 +92,11 @@ public class Sim {
             similarityPredicate.el2 instanceof FunctionApplication &&
             !similarityPredicate.el1.isOrdered() &&
             !similarityPredicate.el2.isOrdered() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) >= similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(
+                ((FunctionApplication) similarityPredicate.el1).functionSymbol,
+                ((FunctionApplication) similarityPredicate.el2).functionSymbol
+            )
+             >= similarityPredicate.CutValue;
     }
 
     private static boolean oriUFSCond(SimilarityPredicate similarityPredicate){
@@ -119,7 +128,11 @@ public class Sim {
             similarityPredicate.el2 instanceof FunctionApplication &&
             !similarityPredicate.el1.isOrdered() &&
             !similarityPredicate.el2.isOrdered() &&
-            com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) < similarityPredicate.CutValue;
+            com.example.relations.relationCollection.lookup(
+                ((FunctionApplication) similarityPredicate.el1).functionSymbol,
+                ((FunctionApplication) similarityPredicate.el2).functionSymbol
+            )
+             < similarityPredicate.CutValue;
     }
 
     public static boolean ConfOFSCond(SimilarityPredicate similarityPredicate){
@@ -130,7 +143,10 @@ public class Sim {
             similarityPredicate.el2.isOrdered() &&
             (
                 similarityPredicate.el1.arity() != similarityPredicate.el2.arity() ||
-                com.example.relations.relationCollection.lookup(similarityPredicate.el1, similarityPredicate.el2) < similarityPredicate.CutValue
+                com.example.relations.relationCollection.lookup(
+                    ((FunctionApplication) similarityPredicate.el1).functionSymbol,
+                    ((FunctionApplication) similarityPredicate.el2).functionSymbol
+                ) < similarityPredicate.CutValue
             );
     }
 
@@ -162,7 +178,7 @@ public class Sim {
         }
         conjunction.proximtyDegree = Math.min(
             conjunction.proximtyDegree,
-            com.example.relations.relationCollection.lookup(f1, f2)
+            com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
         );
     }
 
@@ -171,15 +187,17 @@ public class Sim {
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
         List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f1.functionSymbol, Arrays.copyOf(f1.args, f2.arity()));
         FunctionApplication mem = prems.remove(0);
+        FunctionApplication newF2 = f2.createCopy();
+        newF2.functionSymbol = mem.functionSymbol;
         for(FunctionApplication prem : prems){
             Conjunction conj = conjunction.createCopy();
             decOfSOp(
                 (FunctionApplication) prem,
-                (FunctionApplication) f2, 
+                (FunctionApplication) newF2, 
                 similarityPredicate.CutValue, conj);
             disjunction.add(conj);
         }
-        decOfSOp(mem, f2, similarityPredicate.CutValue, conjunction);
+        decOfSOp(mem, newF2, similarityPredicate.CutValue, conjunction);
         
 
     }

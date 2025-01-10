@@ -22,4 +22,8 @@ public class FunctionSymbol{
         return new FunctionSymbol(name, isOrdered);
     }
 
+    public boolean equals(FunctionSymbol other){
+        return this.name == other.name && this.isOrdered == other.isOrdered;
+    }
+
 }

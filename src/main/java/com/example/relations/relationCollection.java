@@ -2,17 +2,18 @@ package com.example.relations;
 
 import java.util.LinkedList;
 import java.util.List;
-import com.example.constraintElements.Term;
+
+import com.example.constraintElements.FunctionSymbol;
 
 public class relationCollection {
 
     public static List<Relation> collection = new LinkedList<>();
 
-    public static void add(Term el1, Term el2, Double value) {
+    public static void add(FunctionSymbol el1, FunctionSymbol el2, Double value) {
         collection.add(new Relation(el1, el2, value));
     }
 
-    public static  Double lookup(Term el1, Term el2) {
+    public static  Double lookup(FunctionSymbol el1, FunctionSymbol el2) {
         if (el1.toString().equals(el2.toString())) {
             return 1.0;
         }

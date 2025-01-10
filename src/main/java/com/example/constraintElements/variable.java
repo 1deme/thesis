@@ -37,5 +37,13 @@ public class variable implements Term {
 
     @Override
     public boolean isVariable(){return true;}
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof variable){
+            return ((variable) obj).name == this.name;
+        }
+        return false;
+    }
    
 }

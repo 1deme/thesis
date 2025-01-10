@@ -3,77 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equation Solver</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            font-weight: bold;
-        }
-        input, button {
-            margin: 5px 0;
-            padding: 8px;
-            font-size: 16px;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: green;
-            font-weight: bold;
-        }
-    </style>
+    <title>Equation Solver Interface</title>
 </head>
 <body>
-    <h1>Equation Solver</h1>
-    <p>Enter two equations, and the solver will process them and return the result.</p>
+    <header>
+        <img src="university-logo.png" alt="University Logo" style="max-height: 100px;">
+    </header>
+    
+    <main>
+        <h1>Equation Solver Interface</h1>
 
-    <form id="equation-form">
-        <label for="equation1">Equation 1:</label><br>
-        <input type="text" id="equation1" name="equation1" required><br><br>
+
+        <section id="reference">
+            <h2>Reference</h2>
+            <p>Based on the paper: 
+                <a href="https://example.com/paper-link" target="_blank">
+                    "Has to be replaced with actual paper title"
+                </a>
+            </p>
+        </section>
         
-        <label for="equation2">Equation 2:</label><br>
-        <input type="text" id="equation2" name="equation2" required><br><br>
+        <section id="rules">
+            <h2>Input Rules</h2>
+            <ul>
+                <li>Relations should be entered in the format: <code>relation_name(args)</code>.</li>
+                <li>Equations should be separated by new lines.</li>
+                <li>Ensure variables are named uniquely.</li>
+            </ul>
+        </section>
         
-        <button type="submit">Solve</button>
-    </form>
-
-    <div class="result" id="result"></div>
-
-    <script>
-        document.getElementById("equation-form").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent form from reloading the page
+        <section id="inputs">
+            <h2>Input Section</h2>
+            <label for="relation">Enter Relation:</label>
+            <input type="text" id="relation" name="relation" placeholder="Enter relation here">
+            <br><br>
             
-            // Get form data
-            const equation1 = document.getElementById("equation1").value;
-            const equation2 = document.getElementById("equation2").value;
-            
-            try {
-                // Send POST request to the backend
-                const response = await fetch("http://localhost:8080/solve", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}`,
-                });
-                console.log(response.status);  // Logs the HTTP status code
-                if (response.ok) {
-                    const result = await response.text();
-                    document.getElementById("result").textContent = result; // Directly display the received text
-                } else {
-                    document.getElementById("result").textContent = "Error: Unable to process the requestttttt.";
-                }
-
-            } catch (error) {
-                document.getElementById("result").textContent = `Error: ${error.message}`;
-            }
-        });
-    </script>
+            <label for="equations">Enter Equations:</label>
+            <textarea id="equations" name="equations" rows="4" cols="50" placeholder="Enter equations here"></textarea>
+        </section>
+        
+        <section id="options">
+            <h2>Options</h2>
+            <label>
+                <input type="radio" name="method" value="similarity" checked>
+                Solve using Similarity
+            </label>
+            <br>
+            <label>
+                <input type="radio" name="method" value="proximity">
+                Solve using Proximity
+            </label>
+        </section>
+        
+        <section id="result">
+            <h2>Result</h2>
+            <div id="output" style="border: 1px solid #ccc; padding: 10px; min-height: 50px;">
+                <!-- Results will be displayed here -->
+            </div>
+        </section>
+    </main>
 </body>
 </html>

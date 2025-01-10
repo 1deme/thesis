@@ -68,5 +68,25 @@ public class FunctionApplication implements Term{
     public boolean isOrdered(){
         return functionSymbol.isOrdered;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof FunctionApplication){
+            FunctionApplication other = (FunctionApplication) obj;
+            if(!functionSymbol.equals(other.functionSymbol)){
+                return false;
+            }
+            if(args.length != other.args.length){
+                return false;
+            }
+            for(int i = 0; i < args.length; i++){
+                if(!args[i].equals(other.args[i])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     
 }

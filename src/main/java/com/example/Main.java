@@ -22,12 +22,16 @@ public class Main {
 
         SimilarityPredicate sim1 = new SimilarityPredicate(f, g, 0.1);
 
-        relationCollection.add(f, g, 0.2);
+        relationCollection.add(f.functionSymbol, g.functionSymbol, 0.2);
 
 
         Conjunction conjunction = new Conjunction(new ArrayList<>());
         conjunction.add(sim1);
-        System.out.println(com.example.Sim.sim(conjunction));
+
+        com.example.Sim.disjunction.add(conjunction);
+        com.example.Sim.solve();
+
+        //System.out.println(com.example.Sim.sim(conjunction));
 
     }
 }
