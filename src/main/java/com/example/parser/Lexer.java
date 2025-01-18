@@ -8,6 +8,9 @@ public class Lexer {
     private final String input;
     private int position = 0;
 
+
+
+
     Lexer(String input){
         this.input = input;
     }
@@ -35,14 +38,14 @@ public class Lexer {
     }
     private Token parseWord() {
         int start = position;
-        while (position < input.length() && Character.isAlphabetic(input.charAt(position))) {
+        while (position < input.length() && Character.isAlphabetic(input.charAt(position)) || input.charAt(position) == '_') {
             position++;
         }
         String word = input.substring(start, position);
-        System.out.println(word);
-        return word.endsWith("u") || word.endsWith("o")
+        return word.endsWith("_u") || word.endsWith("_o")
                 ? function(word)
-                : new Token(TokenType.VARIABLE, word);
+                : isVariable(word) ? new Token(TokenType.VARIABLE, word)
+                : new Token(TokenType.FUNCTION_CONSTANT,word);
     }
 
     private Token function(String word){
@@ -51,6 +54,9 @@ public class Lexer {
                 : new Token(TokenType.ORDERED_FUNCTION, word);
     }
 
+    private boolean isVariable(String word){
+        return word.matches("^[u-zU-Z].*");
+    }
     public static void main(String[] args) {
         String f = "fu(a,b)";
         List<Token> tokens = new Lexer(f).tokenize();

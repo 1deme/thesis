@@ -15,4 +15,13 @@ public class Relation {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return "Relation{" +
+                "el1=" + el1 +
+                ", el2=" + el2 +
+                ", relId=" + relId +
+                ", value=" + value +
+                '}';
+    }
 }

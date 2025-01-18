@@ -4,21 +4,19 @@ import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 import com.example.constraintElements.TermVariable;
+import com.example.predicates.SimilarityPredicate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parser {
+public class TermParser {
     private final List<Token> tokens;
     private int current = 0;
 
-    Parser(List<Token> tokens){
+    TermParser(List<Token> tokens){
         this.tokens = tokens;
     }
 
-    public Term parse(){
-        return null;
-    }
     private Term parseFunction(boolean isOrdered){
         String functionName = previous().value;
         consume(TokenType.PAREN_OPEN, "Expected '(' after function name");
@@ -34,10 +32,19 @@ public class Parser {
         return new FunctionApplication(functionSymbol,arguments.toArray(new Term[0]),isOrdered);
     }
 
-    private Term parseTerm(){
+
+
+    public Term parseTerm(){
         if(match(TokenType.VARIABLE)){
             return new TermVariable(previous().value.charAt(0));
         }
+
+        if (match(TokenType.FUNCTION_CONSTANT)){
+            char value = previous().value.charAt(0);
+            FunctionSymbol symbol = new FunctionSymbol(value);
+            return new FunctionApplication(symbol,new Term[0], true);
+        }
+
         if(match(TokenType.ORDERED_FUNCTION)) {
             return parseFunction(true);
         }
@@ -47,7 +54,6 @@ public class Parser {
         throw new IllegalStateException("Unexpected token: " + peek());
     }
 
-    // Helper methods
     private boolean match(TokenType type) {
         if (check(type)) {
             advance();
@@ -85,12 +91,22 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        String f = "fu(a,fu(a,b),gu(n,m),c)";
+        String f = "f_u(a,f_u(a,b),g_u(n,m),c)";
         List<Token> tokenList = new Lexer(f).tokenize();
         System.out.println(tokenList);
-        Parser parser = new Parser(tokenList);
+        TermParser parser = new TermParser(tokenList);
         Term term = parser.parseTerm();
         System.out.println(term);
+
+
+
+        String unificationProblem = "f_u(g_o(a),c) ~= f_u(x,b)";
+
+        SimilarityPredicate similarityPredicate = UnificationEquationParser.parse(unificationProblem, 0.5);
+
+        System.out.println(similarityPredicate);
+
+
     }
 
 }
