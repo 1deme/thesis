@@ -22,7 +22,7 @@ public class SimilarityRelationParser {
         while (!isAtEnd()) {
             consume(TokenType.PAREN_OPEN, "Expected '(' at the start of a relation");
             List<Element> arguments = new ArrayList<>();
-
+            double cutValue = 0;
             do {
                 if (match(TokenType.FUNCTION_CONSTANT)) {
                     arguments.add(new FunctionConstant(previous().value.charAt(0)));
@@ -31,6 +31,10 @@ public class SimilarityRelationParser {
                 if (match(TokenType.ORDERED_FUNCTION) || match(TokenType.UNORDERED_FUNCTION)) {
                     FunctionSymbol functionSymbol = new FunctionSymbol(previous().value.charAt(0));
                     arguments.add(functionSymbol);
+                    continue;
+                }
+                if (match(TokenType.NUMBER)){
+                    cutValue = Double.parseDouble(previous().value);
                     continue;
                 }
                 throw new IllegalArgumentException("Unrecognized token: " + previous().value);
@@ -43,7 +47,7 @@ public class SimilarityRelationParser {
                 throw new IllegalStateException("A relation must have at least two constants");
             }
 
-            relations.add(new Relation(arguments.get(0),arguments.get(1),1, 0.5));
+            relations.add(new Relation(arguments.get(0),arguments.get(1),1,cutValue));
         }
 
         return relations;
@@ -87,7 +91,7 @@ public class SimilarityRelationParser {
 
     public static void main(String[] args) {
         // Example tokens: (a, b), (b, c), (c, d)
-        String input = "(f_u, b) (b, c) (c, d)";
+        String input = "(f_u, b, 0.5) (b, c, 0.7) (c, d, 0.8)";
         List<Token> tokens = new Lexer(input).tokenize();
 
         System.out.println(tokens);

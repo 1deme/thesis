@@ -9,5 +9,6 @@ public enum TokenType {
     UNORDERED_FUNCTION,
     PAREN_OPEN,
     PAREN_CLOSE,
-    COMMA
+    COMMA,
+    NUMBER
 }
