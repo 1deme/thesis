@@ -2,11 +2,15 @@ package com.web;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
+import com.setUpMain;
+import com.example.Sim;
+import com.example.dnf.Conjunction;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.net.URLDecoder;
 
 public class SimpleServer {
     public static void main(String[] args) throws Exception {
@@ -28,11 +32,26 @@ public class SimpleServer {
 
                 // Parse the inputs
                 String[] inputs = body.split("&");
-                String equation1 = inputs[0].split("=")[1];
-                String equation2 = inputs[1].split("=")[1];
+                String equation1 = URLDecoder.decode(inputs[0].split("=")[1], StandardCharsets.UTF_8);
+                String equation2 = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
+                String cutValue = URLDecoder.decode(inputs[2].split("=")[1], StandardCharsets.UTF_8);
 
-                // Concatenate the inputs
-                String result = "Concatenated Result: " + equation1 + " " + equation2;
+                // Log or use the inputs
+                // System.out.println("Equation 1: " + equation1);
+                // System.out.println("Equation 2: " + equation2);
+                // System.out.println("Cut Value: " + cutValue);
+
+                setUpMain.setUpAbstractData(equation1,  equation2,  cutValue);
+
+                Sim.solve();
+
+    
+
+                // Concatenate the inputs for response
+                String result = "Received Inputs:\n" +
+                                "Equation 1: " + equation1 + "\n" +
+                                "Equation 2: " + equation2 + "\n" +
+                                "Cut Value: " + cutValue;
 
                 // Send response
                 exchange.getResponseHeaders().set("Content-Type", "text/plain");

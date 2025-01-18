@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Sim {
 
-    static Disjunction disjunction = new Disjunction(new ArrayList<>());
+    public static Disjunction disjunction = new Disjunction(new ArrayList<>());
     static relationCollection relationCollection = new relationCollection();
 
     public static boolean solve(){
@@ -106,19 +106,6 @@ public class Sim {
 
     private static boolean elimSimCond(SimilarityPredicate similarityPredicate, List<SimilarityPredicate> conjunction) {
         return !similarityPredicate.el2.contains(similarityPredicate.el1);
-        // boolean notInEl2 = similarityPredicate.el2.contains(similarityPredicate.el1);
-        // if(notInEl2){
-        //     return false;
-        // }
-        // for(SimilarityPredicate pc : conjunction){
-        //     if(
-        //         pc.RelationId == similarityPredicate.RelationId &&
-        //         pc.CutValue == similarityPredicate.CutValue &&
-        //         (pc.el1.contains(similarityPredicate.el1) || pc.el2.contains(similarityPredicate.el1))){
-        //             return true;
-        //     }
-        // }
-        // return false;
     }
 
     private static void decSimOp(FunctionApplication f1, FunctionApplication f2, int relId, double cutVal, List<SimilarityPredicate> conjunction) {

@@ -13,6 +13,10 @@ public class relationCollection {
         collection.add(new Relation(el1, el2, relId, value));
     }
 
+    public static void add(List<Relation> relations) {
+        collection.addAll(relations);
+    }
+
     public static Double lookup(Element el1, Element el2, int relId) {
         if(el1.toString().equals(el2.toString())){
             return 1.0;

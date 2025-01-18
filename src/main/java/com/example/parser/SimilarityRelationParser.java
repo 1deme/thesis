@@ -1,7 +1,6 @@
 package com.example.parser;
 
 import com.example.constraintElements.Element;
-import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.FunctionConstant;
 import com.example.constraintElements.FunctionSymbol;
 import com.example.relations.Relation;
@@ -89,9 +88,9 @@ public class SimilarityRelationParser {
         }
     }
 
-    public static void main(String[] args) {
+    public static List<Relation> getRelationList(String input) {
         // Example tokens: (a, b), (b, c), (c, d)
-        String input = "(f_u, b, 0.5) (b, c, 0.7) (c, d, 0.8)";
+        //String input = "(f_u, b, 0.5) (b, c, 0.7) (c, d, 0.8)";
         List<Token> tokens = new Lexer(input).tokenize();
 
         System.out.println(tokens);
@@ -99,9 +98,10 @@ public class SimilarityRelationParser {
         SimilarityRelationParser parser = new SimilarityRelationParser(tokens);
         List<Relation> relations = parser.parseRelations();
 
-        System.out.println("Parsed relations:");
-        for (Relation relation : relations) {
-            System.out.println(relation.toString());
-        }
+        return relations;
+        // System.out.println("Parsed relations:");
+        // for (Relation relation : relations) {
+        //     System.out.println(relation.toString());
+        // }
     }
 }

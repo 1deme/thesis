@@ -18,6 +18,10 @@ public class Conjunction {
         this.constraints = conjunction;
     }
 
+    public Conjunction(SimilarityPredicate conjunction){
+        this.constraints.add(conjunction);
+    }
+
     public void map(Element from, Element to){
         constraints.stream().map(x -> x.map(from, to)).collect(Collectors.toList());
     }
