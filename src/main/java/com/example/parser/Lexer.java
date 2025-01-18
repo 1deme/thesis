@@ -8,7 +8,7 @@ public class Lexer {
     private final String input;
     private int position = 0;
 
-    Lexer(String input) {
+    public Lexer(String input) {
         this.input = input;
     }
 

@@ -13,7 +13,7 @@ public class TermParser {
     private final List<Token> tokens;
     private int current = 0;
 
-    TermParser(List<Token> tokens){
+    public TermParser(List<Token> tokens){
         this.tokens = tokens;
     }
 
@@ -92,7 +92,8 @@ public class TermParser {
 
     public static void main(String[] args) {
         String f = "f_u(a,f_u(a,b),g_u(n,m),c)";
-        List<Token> tokenList = new Lexer(f).tokenize();
+        String f1 = "f_u(a,b,x)";
+        List<Token> tokenList = new Lexer(f1).tokenize();
         System.out.println(tokenList);
         TermParser parser = new TermParser(tokenList);
         Term term = parser.parseTerm();
