@@ -23,7 +23,7 @@ public class DisjunctionParser {
         return new Disjunction(conjunctions);
     }
 
-    private static Conjunction parseConjunction(String input) {
+    public static Conjunction parseConjunction(String input) {
         String[] predicateStrings = input.split("\\s*/\\\\\\s*");
 
         List<SimilarityPredicate> predicates = new ArrayList<>();

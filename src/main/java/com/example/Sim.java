@@ -211,4 +211,14 @@ public class Sim {
         conjunction.solution.add(similarityPredicate.el1.toString() + " -> " + similarityPredicate.el2.toString());
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }
+
+    public static void main(String[] args) {
+        
+        Conjunction conjunction = com.example.parser.DisjunctionParser.parseConjunction("f_o ~= 0.5 X");
+        System.out.println(conjunction);
+        sim(conjunction);
+
+        // Create response
+        System.out.println(conjunction.solution);
+    }
 }

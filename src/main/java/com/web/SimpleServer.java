@@ -41,13 +41,16 @@ public void handle(HttpExchange exchange) throws java.io.IOException {
             // Parse inputs safely
             String[] inputs = body.split("&");
             String equation1 = URLDecoder.decode(inputs[0].split("=")[1], StandardCharsets.UTF_8);
-            String relations = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
+            //String relations = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
 
 
-            Sim.solve();
+            Conjunction conjunction = com.example.parser.DisjunctionParser.parseConjunction(equation1);
+            com.example.Sim.disjunction.add(conjunction);
+
+            com.example.Sim.sim(conjunction);
 
             // Create response
-            String result = equation1 + relations;
+            String result = conjunction.solution.toString();
 
             // Send response
             exchange.getResponseHeaders().set("Content-Type", "text/plain");

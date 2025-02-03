@@ -39,19 +39,10 @@ public class SimilarityPredicateParser {
     public static void main(String[] args) {
         try {
             // Test valid input
-            String input = "X ~= 0.5 f_u(Y)";
+            String input = "f_o(a_u) ~= 0.5 b_o(X)";
             SimilarityPredicate predicate = SimilarityPredicateParser.parse(input);
             System.out.println("Parsed SimilarityPredicate: " + predicate);
 
-            // Test another valid input
-            String input2 = "g_o(X, Y) ~= 0.75 Z";
-            SimilarityPredicate predicate2 = SimilarityPredicateParser.parse(input2);
-            System.out.println("Parsed SimilarityPredicate: " + predicate2);
-
-            // Test invalid input
-            String invalidInput = "X ~= abc Y";
-            SimilarityPredicate invalidPredicate = SimilarityPredicateParser.parse(invalidInput);
-            System.out.println("Parsed SimilarityPredicate: " + invalidPredicate);
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         }
