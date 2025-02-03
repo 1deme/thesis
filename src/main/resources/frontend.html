@@ -3,64 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equation Solver Interface</title>
+    <title>Equation Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input::placeholder {
+            color: #888;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .rules {
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-left: 4px solid #007bff;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+        .result-label {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .result {
+            font-size: 18px;
+            color: green;
+            font-weight: bold;
+            white-space: pre-wrap;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            display: block;
+            margin-top: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <img src="university-logo.png" alt="University Logo" style="max-height: 100px;">
-    </header>
-    
-    <main>
-        <h1>Equation Solver Interface</h1>
 
+    <h1>Equation Solver</h1>
 
-        <section id="reference">
-            <h2>Reference</h2>
-            <p>Based on the paper: 
-                <a href="https://example.com/paper-link" target="_blank">
-                    "Has to be replaced with actual paper title"
-                </a>
-            </p>
-        </section>
-        
-        <section id="rules">
-            <h2>Input Rules</h2>
-            <ul>
-                <li>Relations should be entered in the format: <code>relation_name(args)</code>.</li>
-                <li>Equations should be separated by new lines.</li>
-                <li>Ensure variables are named uniquely.</li>
-            </ul>
-        </section>
-        
-        <section id="inputs">
-            <h2>Input Section</h2>
-            <label for="relation">Enter Relation:</label>
-            <input type="text" id="relation" name="relation" placeholder="Enter relation here">
-            <br><br>
+    <p>This is java implementatino of algorithm described in Similarity-Based Constraint Solving Modulo Commutativity: A Unified Framework</p>
+
+    <form id="equation-form">
+        <label for="equation1">Equation:</label>
+        <input type="text" id="equation1" name="equation1" 
+        placeholder="e.g (f_o(a) ~= b_o(x) /\ f_u(a, b) ~= b_u(x)) \/ (m_u() = c_o(b) /\ m = b)" required>
+
+        <label for="equation2">Relations:</label>
+        <input type="text" id="equation2" name="equation2" placeholder="e.g. (f_o, b_o, 0.5), (c_o, m_o, 0.6)" required>
+
+        <label for="cutvalue">Cut Value:</label>
+        <input type="text" id="cutvalue" name="cutvalue" placeholder="0.3" required>
+        <br>
+        <button type="submit">Solve</button>
+    </form>
+
+    <div class="result-container">
+        <p class="result-label">Result:</p>
+        <div class="result" id="result"></div>
+    </div>
+
+    <div class="rules">
+        <h2> Input Syntax: </h2>
+        <ul>
+            <li>A character followed by "_o" is an ordered function symbol.</li>
+            <li>A character followed by "_u" is an unordered function symbol.</li>
+            <li>An alphabet character without "_o" or "_u" is a variable.</li>
+            <li>Equations must be in Disjunctive Normal Form (DNF).</li>
+        </ul>
+    </div>
+    <div class="rules">
+        <h2> Some Example: </h2>
+        <p>click on them to try</p>
+        <ul>
+            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+        </ul>
+    </div>
+
+    <div class="links">
+        <h2>References</h2>
+        <a href="https://github.com/1deme/thesis" target="_blank">Implementation on GitHub</a>
+    </div>
+
+    <script>
+        document.getElementById("equation-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent form from reloading the page
             
-            <label for="equations">Enter Equations:</label>
-            <textarea id="equations" name="equations" rows="4" cols="50" placeholder="Enter equations here"></textarea>
-        </section>
-        
-        <section id="options">
-            <h2>Options</h2>
-            <label>
-                <input type="radio" name="method" value="similarity" checked>
-                Solve using Similarity
-            </label>
-            <br>
-            <label>
-                <input type="radio" name="method" value="proximity">
-                Solve using Proximity
-            </label>
-        </section>
-        
-        <section id="result">
-            <h2>Result</h2>
-            <div id="output" style="border: 1px solid #ccc; padding: 10px; min-height: 50px;">
-                <!-- Results will be displayed here -->
-            </div>
-        </section>
-    </main>
+            // Get form data
+            const equation1 = document.getElementById("equation1").value;
+            const equation2 = document.getElementById("equation2").value;
+            const cutValue = document.getElementById("cutvalue").value;
+            
+            try {
+                // Send POST request to the backend
+                const response = await fetch("http://localhost:8080/solve", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}&cutvalue=${encodeURIComponent(cutValue)}`,
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    document.getElementById("result").textContent = result;
+                } else {
+                    document.getElementById("result").textContent = "Error: Unable to process the request.";
+                }
+
+            } catch (error) {
+                document.getElementById("result").textContent = `Error: ${error.message}`;
+            }
+        });
+    
+        function fillWithExamples() {
+            document.getElementById("equation1").value = "f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b)";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)";
+            document.getElementById("cutvalue").value = "0.4";
+        }
+
+    </script>
 </body>
 </html>
