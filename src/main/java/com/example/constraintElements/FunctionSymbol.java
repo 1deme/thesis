@@ -2,8 +2,8 @@ package com.example.constraintElements;
 
 public class FunctionSymbol{
 
-    char name;
-    boolean isOrdered;
+    public char name;
+    public boolean isOrdered;
 
     public FunctionSymbol (char name, boolean ordered){
         this.name = name;
@@ -11,7 +11,7 @@ public class FunctionSymbol{
     }
 
     public String toString(){
-        return Character.toString(name);
+        return Character.toString(name) + (isOrdered ? "_o" : "_u");
     }
 
     public FunctionSymbol createCopy(){
