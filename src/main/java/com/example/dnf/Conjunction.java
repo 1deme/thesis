@@ -60,7 +60,7 @@ public class Conjunction {
         for (int i = 0; i < constraints.size(); i++) {
             sb.append(constraints.get(i));
             if (i < constraints.size() - 1) {
-                sb.append(" ∧ "); 
+                sb.append("/\\"); 
             }
         }
         return sb.toString();

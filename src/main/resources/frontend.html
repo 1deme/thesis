@@ -89,8 +89,6 @@
         <label for="equation2">Relations:</label>
         <input type="text" id="equation2" name="equation2" placeholder="e.g. (f_o, b_o, 0.5), (c_o, m_o, 0.6)" required>
 
-        <label for="cutvalue">Cut Value:</label>
-        <input type="text" id="cutvalue" name="cutvalue" placeholder="0.3" required>
         <br>
         <button type="submit">Solve</button>
     </form>
@@ -105,7 +103,7 @@
         <ul>
             <li>A character followed by "_o" is an ordered function symbol.</li>
             <li>A character followed by "_u" is an unordered function symbol.</li>
-            <li>An alphabet character without "_o" or "_u" is a variable.</li>
+            <li>An uppercase alphabet character without "_o" or "_u" is a variable.</li>
             <li>Equations must be in Disjunctive Normal Form (DNF).</li>
         </ul>
     </div>
@@ -130,7 +128,6 @@
             // Get form data
             const equation1 = document.getElementById("equation1").value;
             const equation2 = document.getElementById("equation2").value;
-            const cutValue = document.getElementById("cutvalue").value;
             
             try {
                 // Send POST request to the backend
@@ -139,7 +136,7 @@
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
                     },
-                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}&cutvalue=${encodeURIComponent(cutValue)}`,
+                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}`,
                 });
 
                 if (response.ok) {
@@ -157,7 +154,6 @@
         function fillWithExamples() {
             document.getElementById("equation1").value = "f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b)";
             document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)";
-            document.getElementById("cutvalue").value = "0.4";
         }
 
     </script>

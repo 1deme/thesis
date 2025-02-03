@@ -42,18 +42,12 @@ public void handle(HttpExchange exchange) throws java.io.IOException {
             String[] inputs = body.split("&");
             String equation1 = URLDecoder.decode(inputs[0].split("=")[1], StandardCharsets.UTF_8);
             String relations = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
-            String cutValue = URLDecoder.decode(inputs[2].split("=")[1], StandardCharsets.UTF_8);
 
-            // System.out.println("Equations:" + equation1);
-            // System.out.println("Relations: " + relations);
-            // System.out.println("Cut Value: " + cutValue);
 
-            // // Call processing functions (ensure they don't crash)
-            // setUpMain.setUpAbstractData(equation1, relations, cutValue);
-            // Sim.solve();
+            Sim.solve();
 
             // Create response
-            String result = equation1 + relations + cutValue;
+            String result = equation1 + relations;
 
             // Send response
             exchange.getResponseHeaders().set("Content-Type", "text/plain");
