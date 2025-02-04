@@ -15,26 +15,20 @@ public class Main {
         
         variable x = new variable('x');
         variable y = new variable('y');
-        variable z = new variable('z');
 
         FunctionApplication f = new FunctionApplication('f', true, new Term[]{x, y});
-        FunctionApplication g = new FunctionApplication('g', false, new Term[]{f});
+        FunctionApplication g = new FunctionApplication('g', true, new Term[]{f});
 
-        FunctionApplication h = new FunctionApplication('h', true, new Term[]{z});
 
-        SimilarityPredicate sim1 = new SimilarityPredicate(g, h, 0.1);
-        SimilarityPredicate sim2 = new SimilarityPredicate(g, h, 0.2);
+        SimilarityPredicate sim1 = new SimilarityPredicate(f, g, 0.3);
 
-        //relationCollection.add(g.functionSymbol, h.functionSymbol, 0.2);
+        relationCollection.add(g.functionSymbol, f.functionSymbol, 0.2);
 
         Conjunction conjunction = new Conjunction(new ArrayList<>());
         conjunction.add(sim1);
-        conjunction.add(sim2);
 
-        com.example.Sim.disjunction.add(conjunction);
-        com.example.Sim.disjunction.add(conjunction);
-        System.out.println(com.example.Sim.disjunction);
-        //com.example.Sim.solve();
+        com.example.Sim.sim(conjunction);
+        System.out.println(conjunction.solution);
 
     }
 }

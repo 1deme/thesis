@@ -214,7 +214,7 @@ public class Sim {
 
     public static void main(String[] args) {
         
-        Conjunction conjunction = com.example.parser.DisjunctionParser.parseConjunction("f_o ~= 0.5 X");
+        Conjunction conjunction = com.example.parser.DisjunctionParser.parseConjunction("");
         System.out.println(conjunction);
         sim(conjunction);
 
