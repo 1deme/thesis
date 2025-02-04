@@ -10,7 +10,7 @@ This project implements a similarity-based constraint-solving algorithm modulo c
 Given the constraint:
 
 ```math
-f_u(x,f_o(x,b),y,h_o(x,y)) ?= g_u(g_o(a,y),b)
+f_u(x,f_o(x,b),y,h_o(x,y)) ?= g_u(g_o(a,y),b)  
 
 - R(f_u, g_u) = 0.5  
 - R(f_o, g_o) = 0.6
