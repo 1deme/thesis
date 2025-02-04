@@ -11,7 +11,9 @@ Given the constraint:
 
 ```math
 f_u(x,f_o(x,b),y,h_o(x,y)) ?= g_u(g_o(a,y),b)  
-
+```
+and R
+```math
 - R(f_u, g_u) = 0.5  
 - R(f_o, g_o) = 0.6
 - R(h_o, g_o) = 0.3
