@@ -23,34 +23,34 @@ public class Permutations {
     }
 
     
-    public static List<FunctionApplication> generateInstances(FunctionSymbol functionSymbol, Term[] args, int arity) {
+    public static List<FunctionApplication> generatePermutations(FunctionSymbol functionSymbol, Term[] args, int arity) {
         List<FunctionApplication> instances = new ArrayList<>();
-        generateSubsets(args, arity, 0, new Term[arity], 0, instances, functionSymbol);
+        boolean[] used = new boolean[args.length]; // Track used elements
+        backtrack(args, arity, used, new ArrayList<>(), instances, functionSymbol);
         return instances;
     }
 
     /**
-     * Recursively generates all subsets of length `arity` from the `args` array.
-     *
-     * @param args           The array of arguments to choose subsets from.
-     * @param arity          The length of the subsets to generate.
-     * @param start          The starting index for generating subsets.
-     * @param current        The current subset being constructed.
-     * @param currentIndex   The current index in the `current` array.
-     * @param instances      The list to store the generated FunctionApplication instances.
-     * @param functionSymbol The FunctionSymbol to use in the FunctionApplication.
+     * Backtracking helper to generate permutations.
      */
-    private static void generateSubsets(Term[] args, int arity, int start, Term[] current, int currentIndex, List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
-        // If the current subset has the desired length, create a FunctionApplication
-        if (currentIndex == arity) {
-            instances.add(new FunctionApplication(functionSymbol, current.clone()));
+    private static void backtrack(Term[] args, int arity, boolean[] used, List<Term> current, 
+                                  List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
+        // Base case: If the current permutation is complete
+        if (current.size() == arity) {
+            Term[] permutation = current.toArray(new Term[0]);
+            instances.add(new FunctionApplication(functionSymbol, permutation));
             return;
         }
 
-        // Recursively generate subsets
-        for (int i = start; i < args.length; i++) {
-            current[currentIndex] = args[i]; // Include the current argument
-            generateSubsets(args, arity, i + 1, current, currentIndex + 1, instances, functionSymbol);
+        // Recursive case: Build permutations
+        for (int i = 0; i < args.length; i++) {
+            if (!used[i]) {
+                used[i] = true; // Mark element as used
+                current.add(args[i]); // Add to current permutation
+                backtrack(args, arity, used, current, instances, functionSymbol);
+                current.remove(current.size() - 1); // Remove last element (backtrack)
+                used[i] = false; // Unmark element
+            }
         }
     }
 }

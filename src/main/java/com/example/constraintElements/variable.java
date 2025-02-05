@@ -22,7 +22,10 @@ public class variable implements Term {
 
     @Override
     public boolean contains(Term el) {
-        return el == this;
+        if(el.isVariable()){
+            return el.getName() == this.name;
+        }
+        return false;
     }
 
     @Override

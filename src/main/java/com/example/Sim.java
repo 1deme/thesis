@@ -183,7 +183,7 @@ public class Sim {
     public static void decUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         FunctionApplication f1 = (FunctionApplication) similarityPredicate.el1;
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
-        List<FunctionApplication> prems = com.example.utils.Permutations.generateInstances(f1.functionSymbol, f1.args, f2.arity());
+        List<FunctionApplication> prems = com.example.utils.Permutations.generatePermutations(f1.functionSymbol, f1.args, f2.arity());
         FunctionApplication mem = prems.remove(0);
         FunctionApplication newF2 = f2.createCopy();
         newF2.functionSymbol = mem.functionSymbol;

@@ -9,7 +9,6 @@ import com.example.constraintElements.Term;
 import com.example.constraintElements.variable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TermParser {

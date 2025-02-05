@@ -112,7 +112,7 @@
         <p>click on them to try</p>
         <ul>
             <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
-            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). cut_value = 0.4. Relations: (f_u, g_u, 0.6)</li>
         </ul>
     </div>
 
@@ -153,8 +153,13 @@
         });
     
         function fillWithExamples() {
-            document.getElementById("equation1").value = "f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b)";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)";
+            document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o), Y, h_o(X, Y)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3)";
+        }
+
+        function fillWithExamples2() {
+            document.getElementById("equation1").value = "(f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6)";
         }
 
     </script>
