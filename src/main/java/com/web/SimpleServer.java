@@ -45,6 +45,8 @@ public class SimpleServer {
 
                     String result = com.example.Sim.solve();
 
+                    com.example.Sim.solution.clear();
+
                     exchange.getResponseHeaders().set("Content-Type", "text/plain");
                     exchange.sendResponseHeaders(200, result.length());
                     OutputStream os = exchange.getResponseBody();
