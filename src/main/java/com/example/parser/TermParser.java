@@ -8,12 +8,13 @@ import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 import com.example.constraintElements.variable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TermParser {
 
     public static Term parse(String input) {
-
         input = input.trim();
 
         if (input.isEmpty()) {
@@ -22,13 +23,9 @@ public class TermParser {
 
         if (isVariable(input)) {
             return parseVariable(input);
-        }
-
-        else if (isFunctionSymbol(input)) {
+        } else if (isFunctionSymbol(input)) {
             return parseFunctionApplication(input);
-        }
-
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid input: " + input);
         }
     }
@@ -69,16 +66,36 @@ public class TermParser {
         return new FunctionSymbol(name, isOrdered);
     }
 
+    // Updated parseArguments method to handle nested parentheses
     private static Term[] parseArguments(String argsStr) {
-        return Arrays.stream(argsStr.split(","))
-                .map(String::trim)
-                .map(TermParser::parse)
-                .toArray(Term[]::new);
+        List<String> argStrings = new ArrayList<>();
+        int depth = 0;
+        StringBuilder currentArg = new StringBuilder();
+
+        for (char c : argsStr.toCharArray()) {
+            if (c == '(') depth++;
+            else if (c == ')') depth--;
+
+            if (c == ',' && depth == 0) {
+                argStrings.add(currentArg.toString().trim());
+                currentArg.setLength(0);
+            } else {
+                currentArg.append(c);
+            }
+        }
+
+        if (currentArg.length() > 0) {
+            argStrings.add(currentArg.toString().trim());
+        }
+
+        return argStrings.stream()
+                         .map(TermParser::parse)
+                         .toArray(Term[]::new);
     }
 
     public static void main(String[] args) {
         try {
-            String complexFunctionStr = "g_o(X, Y, f_o(Z), Z)";
+            String complexFunctionStr = "g_o(a_o(X, Y))";
             Term complexFunction = TermParser.parse(complexFunctionStr);
             System.out.println("Parsed Complex FunctionApplication: " + complexFunction);
         } catch (IllegalArgumentException e) {
