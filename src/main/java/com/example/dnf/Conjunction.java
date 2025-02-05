@@ -54,6 +54,19 @@ public class Conjunction {
         constraints.add(pc);
     }
 
+    public String solutionString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" < ");
+        for (int i = 0; i < solution.size(); i++) {
+            sb.append(solution.get(i));
+            if (i < solution.size() - 1) {
+                sb.append(" /\\ "); 
+            }
+        }
+        sb.append("; " + proximtyDegree + " > ");
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

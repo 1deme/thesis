@@ -14,13 +14,14 @@ public class Sim {
 
     public static Disjunction disjunction = new Disjunction(new ArrayList<>());
     public static relationCollection relationCollection = new relationCollection();
+    public static List<String> solution = new ArrayList<>();
 
 
     public static String solve(){
         while(disjunction.conjunctions.size() != 0){
             sim(disjunction.conjunctions.remove(0));
         }
-        return disjunction.conjunctions.stream().map(x -> x.solution.toString()).reduce("", (a, b) -> a + b);
+        return solution.stream().reduce("", (a, b) -> a + b);
     }
 
     public static boolean sim(Conjunction conjunction){
@@ -61,7 +62,7 @@ public class Sim {
             }
             throw new UnsupportedOperationException("Pattern not recognized");
         }
-        System.out.println(conjunction.solution + " " + conjunction.proximtyDegree);
+        solution.add(conjunction.solutionString());
         return true;
     }
 

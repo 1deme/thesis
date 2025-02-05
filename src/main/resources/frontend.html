@@ -141,6 +141,7 @@
 
                 if (response.ok) {
                     const result = await response.text();
+                    document.getElementById("result").textContent = "";
                     document.getElementById("result").textContent = result;
                 } else {
                     document.getElementById("result").textContent = "Error: Unable to process the request.";
