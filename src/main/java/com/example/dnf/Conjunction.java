@@ -14,7 +14,7 @@ public class Conjunction {
 
     public List<SimilarityPredicate> constraints = new LinkedList<SimilarityPredicate>();
     public double proximtyDegree = 1;
-    public List<String> solution = new LinkedList<>();
+    public List<SimilarityPredicate> solution = new LinkedList<SimilarityPredicate>();
 
     public Conjunction(List<SimilarityPredicate> conjunction){
         this.constraints = conjunction;

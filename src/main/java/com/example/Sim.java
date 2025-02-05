@@ -1,6 +1,5 @@
 package com.example;
 import java.util.List;
-import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.variable;
@@ -10,19 +9,18 @@ import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 public class Sim {
 
     public static Disjunction disjunction = new Disjunction(new ArrayList<>());
     public static relationCollection relationCollection = new relationCollection();
-    public static Set<Character> allFunctionSymbols = new HashSet<>();
 
 
-    public static void solve(){
+    public static String solve(){
         while(disjunction.conjunctions.size() != 0){
             sim(disjunction.conjunctions.remove(0));
         }
+        return disjunction.conjunctions.stream().map(x -> x.solution.toString()).reduce("", (a, b) -> a + b);
     }
 
     public static boolean sim(Conjunction conjunction){
@@ -208,7 +206,7 @@ public class Sim {
     }
 
     public static void SolSUOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
-        conjunction.solution.add(similarityPredicate.el1.toString() + " -> " + similarityPredicate.el2.toString());
+        conjunction.solution.add(similarityPredicate);
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }
 

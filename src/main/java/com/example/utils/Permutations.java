@@ -1,7 +1,9 @@
 package com.example.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.FunctionSymbol;
@@ -9,9 +11,11 @@ import com.example.constraintElements.Term;
 
 public class Permutations {
 
+    public static Set<Character> allFunctionSymbols = new HashSet<>();
+
     public static char getFreshFunctionSymbol() {
         for (char c = 'a'; c <= 'z'; c++) {
-            if (!com.example.Sim.allFunctionSymbols.contains(c)) {
+            if (!allFunctionSymbols.contains(c)) {
                 return c;
             }
         }
@@ -28,14 +32,13 @@ public class Permutations {
 
     private static void generatePermutations(Term[] args, int start, List<FunctionApplication> instances, FunctionSymbol functionSymbol, char freshFunctionSymbol) {
         if (start == args.length - 1) {
-            // Add a new instance with the current permutation
             instances.add(new FunctionApplication(new FunctionSymbol(freshFunctionSymbol, true), args.clone()));
             return;
         }
         for (int i = start; i < args.length; i++) {
             swap(args, i, start);
             generatePermutations(args, start + 1, instances, functionSymbol, freshFunctionSymbol);
-            swap(args, i, start); // backtrack
+            swap(args, i, start);
         }
     }
 
