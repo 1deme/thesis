@@ -9,7 +9,7 @@ public class relationCollection {
 
     public static List<Relation> collection = new LinkedList<>();
 
-    public static void add(FunctionSymbol el1, FunctionSymbol el2, Double value) {
+    public void add(FunctionSymbol el1, FunctionSymbol el2, Double value) {
         collection.add(new Relation(el1, el2, value));
     }
 

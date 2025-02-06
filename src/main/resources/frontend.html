@@ -101,10 +101,11 @@
     <div class="rules">
         <h2> Input Syntax: </h2>
         <ul>
-            <li>A character followed by "_o" is an ordered function symbol.</li>
-            <li>A character followed by "_u" is an unordered function symbol.</li>
-            <li>An uppercase alphabet character without "_o" or "_u" is a variable.</li>
-            <li>Equations must be in Disjunctive Normal Form (DNF).</li>
+            <li>A character followed by "_o" is an ordered function symbol. e.g f_u, g_u</li>
+            <li>A character followed by "_u" is an unordered function symbol. e.g f_o, g_o</li>
+            <li>An uppercase alphabet character without "_o" or "_u" is a variable. e.g X, Y, M</li>
+            <li>An \\/ must be used for OR and /\\ for AND</li>
+            <li>Equations must be in Disjunctive Normal Form (DNF). Brackets must be used for each conjunction.</li>
         </ul>
     </div>
     <div class="rules">
@@ -112,7 +113,7 @@
         <p>click on them to try</p>
         <ul>
             <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
-            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). cut_value = 0.4. Relations: (f_u, g_u, 0.6)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). cut_value = 0.4. Relations: (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
         </ul>
     </div>
 

@@ -8,7 +8,6 @@ import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Sim {
 
@@ -193,9 +192,17 @@ public class Sim {
                 (FunctionApplication) prem,
                 (FunctionApplication) newF2, 
                 similarityPredicate.CutValue, conj);
+                conj.proximtyDegree = Math.min(
+                    conj.proximtyDegree,
+                    com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
+                );
             disjunction.add(conj);
         }
         decOfSOp(mem, newF2, similarityPredicate.CutValue, conjunction);
+        conjunction.proximtyDegree = Math.min(
+            conjunction.proximtyDegree,
+            com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
+        );
         
 
     }
