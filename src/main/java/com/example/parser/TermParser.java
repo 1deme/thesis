@@ -92,13 +92,4 @@ public class TermParser {
                          .toArray(Term[]::new);
     }
 
-    public static void main(String[] args) {
-        try {
-            String complexFunctionStr = "g_o(a_o(X, Y))";
-            Term complexFunction = TermParser.parse(complexFunctionStr);
-            System.out.println("Parsed Complex FunctionApplication: " + complexFunction);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
 }

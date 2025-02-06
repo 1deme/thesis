@@ -1,6 +1,6 @@
 # Similarity-Based Constraint Solver Modulo Commutativity
 
-This project implements a similarity-based constraint-solving algorithm modulo commutativity, extending classical methods to handle fuzzy relations and approximate reasoning. The solver can process equations even with function symbol mismatches and varying arities. It is implemented in Java, and on Feb 10, it will feature a web-based interface for accessibility.
+This project implements a similarity-based constraint-solving algorithm modulo commutativity, extending classical methods to handle fuzzy relations and approximate reasoning. The solver can process equations even with function symbol mismatches and varying arities. It is implemented in Java.
 ## Features
 - Solves first-order equations with fuzzy relations.
 - Supports commutative function symbols.
@@ -21,3 +21,12 @@ and R
 it gives solution
 ```math
 ⟨x = g_o(a,y) ∧ y = b; 0.6⟩ ∨ ⟨ x = a ∧ y = b; 0.5⟩
+```
+## How to Use  
+
+1. Download the project.  
+2. Run the server with the following command:  
+
+   ```sh
+   mvn clean compile exec:java -Dexec.mainClass="com.web.SimpleServer"
+3. Open frontend.html located in the resources folder using Live Server.

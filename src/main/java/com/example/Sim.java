@@ -27,8 +27,6 @@ public class Sim {
         
         while(conjunction.constraints.size() != 0){
 
-            System.out.println(conjunction);
-
             SimilarityPredicate similarityPredicate = conjunction.constraints.remove(0);
 
             if(delVarCond(similarityPredicate)){
@@ -218,13 +216,4 @@ public class Sim {
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }
 
-    public static void main(String[] args) {
-        
-        Conjunction conjunction = com.example.parser.DisjunctionParser.parseConjunction("");
-        System.out.println(conjunction);
-        sim(conjunction);
-
-        // Create response
-        System.out.println(conjunction.solution);
-    }
 }

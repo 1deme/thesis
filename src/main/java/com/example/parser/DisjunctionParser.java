@@ -36,21 +36,4 @@ public class DisjunctionParser {
         return new Conjunction(predicates);
     }
 
-    public static void main(String[] args) {
-        try {
-            String input = "(X ~= 0.5 Y /\\ f_u(Z) ~= 0.7 W) \\/ (A ~= 0.3 B)";
-            Disjunction disjunction = DisjunctionParser.parse(input);
-            System.out.println("Parsed Disjunction: " + disjunction);
-
-            String input2 = "(X ~= 0.5 Y \\/ X ~= 0.5 Y) \\/ (A ~= 0.3 B /\\ C ~= 0.8 D)";
-            Disjunction disjunction2 = DisjunctionParser.parse(input2);
-            System.out.println("Parsed Disjunction: " + disjunction2);
-
-            String invalidInput = "(X ~= 0.5 Y /\\ invalid) \\/ (A ~= 0.3 B)";
-            Disjunction invalidDisjunction = DisjunctionParser.parse(invalidInput);
-            System.out.println("Parsed Disjunction: " + invalidDisjunction);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
 }

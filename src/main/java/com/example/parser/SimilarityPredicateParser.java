@@ -36,17 +36,4 @@ public class SimilarityPredicateParser {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            // Test valid input
-            String input = "f_o(a_u) ~= 0.5 b_o(X)";
-            SimilarityPredicate predicate = SimilarityPredicateParser.parse(input);
-            System.out.println("Parsed SimilarityPredicate: " + predicate);
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-    
-
 }
