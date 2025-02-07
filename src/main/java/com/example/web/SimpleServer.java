@@ -1,4 +1,4 @@
-package com.web;
+package com.example.web;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
