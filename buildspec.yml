@@ -1,0 +1,12 @@
+version: 1
+phases:
+    install:
+        runtime-versions:
+            java: corretto17  # Ensure Java 17 (or your version) is installed
+    build:
+        commands:
+            - mvn clean compile  # Generate target/classes
+artifacts:
+    baseDirectory: target/classes
+    files:
+        - '**/*'
