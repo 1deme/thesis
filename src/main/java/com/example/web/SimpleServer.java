@@ -27,11 +27,11 @@ public class SimpleServer {
         System.out.println("Server started on port 8080");
     }
 
-    // Handles serving the frontend.html file
     static class FileHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            Path filePath = Path.of("src/main/resources/frontend.html");
+            // Adjust the path to point to the "static" directory
+            Path filePath = Path.of("src/main/resources/static/frontend.html");
             
             if (Files.exists(filePath)) {
                 byte[] response = Files.readAllBytes(filePath);
@@ -46,6 +46,7 @@ public class SimpleServer {
             }
         }
     }
+    
 
     static class SolveHandler implements HttpHandler {
         @Override
