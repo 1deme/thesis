@@ -1,23 +1,93 @@
 package com.example;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        String equation1 = "(f_u(X, f_o(X, b_o), Y, h_o(X, Y)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
-        String relations = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3)";
+        // Serve frontend.html at "/"
+        server.createContext("/", new FileHandler());
 
-        // String equation1 = "(f_u(X, b_o) ~= 0.4 g_u(a_o, b_o))";
-        // String relations = "(f_u, g_u, 0.6)";
+        // Keep your existing solve API
+        server.createContext("/solve", new SolveHandler());
 
-        // String equation1 = "(f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
-        // String relations = "(f_u, g_u, 0.6)";
-        
-        com.example.Sim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
-        com.example.parser.RelationsParser.parse(relations);
+        server.setExecutor(null); // Default executor
+        server.start();
+        System.out.println("Server started on port 8080");
+    }
 
-        System.out.println(com.example.Sim.solve());
+    static class FileHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            // Adjust the path to point to the "static" directory
+            Path filePath = Path.of("src/main/webapp/index.html");
+            
+            if (Files.exists(filePath)) {
+                byte[] response = Files.readAllBytes(filePath);
+                exchange.getResponseHeaders().set("Content-Type", "text/html");
+                exchange.sendResponseHeaders(200, response.length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(response);
+                os.close();
+            } else {
+                exchange.sendResponseHeaders(404, 0);
+                exchange.close();
+            }
+        }
+    }
+    
 
-        com.example.Sim.solution.clear();
+    static class SolveHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            System.out.println("Received request: " + exchange.getRequestMethod());
 
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+            if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
+                exchange.sendResponseHeaders(200, -1);
+                return;
+            }
+
+            if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                try {
+                    String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                    System.out.println("Received body: " + body);
+
+                    String[] inputs = body.split("&");
+                    String equation1 = URLDecoder.decode(inputs[0].split("=")[1], StandardCharsets.UTF_8);
+                    String relations = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
+
+                    com.example.Sim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
+                    com.example.parser.RelationsParser.parse(relations);
+
+                    String result = com.example.Sim.solve();
+                    com.example.Sim.solution.clear();
+
+                    exchange.getResponseHeaders().set("Content-Type", "text/plain");
+                    exchange.sendResponseHeaders(200, result.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(result.getBytes(StandardCharsets.UTF_8));
+                    os.close();
+                } catch (Exception e) {
+                    System.err.println("Error processing request: " + e.getMessage());
+                    e.printStackTrace();
+                    exchange.sendResponseHeaders(500, -1);
+                }
+            } else {
+                exchange.sendResponseHeaders(405, -1);
+            }
+        }
     }
 }
