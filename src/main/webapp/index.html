@@ -83,11 +83,10 @@
 
     <form id="equation-form">
         <label for="equation1">Equation:</label>
-        <input type="text" id="equation1" name="equation1" 
-        placeholder="e.g (f_o(a) ~= b_o(x) /\ f_u(a, b) ~= b_u(x)) \/ (m_u() = c_o(b) /\ m = b)" required>
+        <input type="text" id="equation1" name="equation1" required>
 
         <label for="equation2">Relations:</label>
-        <input type="text" id="equation2" name="equation2" placeholder="e.g. (f_o, b_o, 0.5), (c_o, m_o, 0.6)" required>
+        <input type="text" id="equation2" name="equation2" required>
 
         <br>
         <button type="submit">Solve</button>
@@ -101,10 +100,10 @@
     <div class="rules">
         <h2> Input Syntax: </h2>
         <ul>
-            <li>A character followed by "_o" is an ordered function symbol. e.g f_u, g_u</li>
-            <li>A character followed by "_u" is an unordered function symbol. e.g f_o, g_o</li>
+            <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_u, g_u</li>
+            <li>A lower case character followed by "_u" is an unordered function symbol. e.g f_o, g_o</li>
             <li>An uppercase alphabet character without "_o" or "_u" is a variable. e.g X, Y, M</li>
-            <li>An \\/ must be used for OR and /\\ for AND</li>
+            <li>An \/ must be used for OR and /\ for AND</li>
             <li>Equations must be in Disjunctive Normal Form (DNF). Brackets must be used for each conjunction.</li>
         </ul>
     </div>
@@ -117,12 +116,7 @@
         </ul>
     </div>
 
-    <div class="links">
-        <h2>References</h2>
-        <a href="https://github.com/1deme/thesis" target="_blank">Implementation on GitHub</a>
-    </div>
-
-    <script>
+<script>
         document.getElementById("equation-form").addEventListener("submit", async function(event) {
             event.preventDefault(); // Prevent form from reloading the page
             
