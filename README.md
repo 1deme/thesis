@@ -28,5 +28,7 @@ it gives solution
 2. Run the server with the following command:  
 
    ```sh
-   mvn clean compile exec:java -Dexec.mainClass="com.web.SimpleServer"
-3. Open frontend.html located in the resources folder using Live Server.
+   mvn clean compile exec:java -Dexec.mainClass="com.example.Main"
+3. Open 
+   ```sh
+    localhost:8080/.
