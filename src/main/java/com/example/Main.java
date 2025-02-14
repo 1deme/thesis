@@ -46,17 +46,16 @@ public class Main {
             }
         }
     }
-    
+
 
     static class SolveHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            System.out.println("Received request: " + exchange.getRequestMethod());
-
             // Handle CORS preflight requests
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
 
             if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(204, -1); // No Content
@@ -89,9 +88,9 @@ public class Main {
                     exchange.sendResponseHeaders(500, -1);
                 }
             } else {
-                exchange.sendResponseHeaders(405, -1);
+                exchange.sendResponseHeaders(405, -1); // Method Not Allowed
             }
         }
-
     }
+
 }
