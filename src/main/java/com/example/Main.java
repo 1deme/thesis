@@ -53,10 +53,13 @@ public class Main {
         public void handle(HttpExchange exchange) throws IOException {
             System.out.println("Received request: " + exchange.getRequestMethod());
 
+            // Handle CORS preflight requests
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
 
             if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
-                exchange.sendResponseHeaders(200, -1);
+                exchange.sendResponseHeaders(204, -1); // No Content
                 return;
             }
 
@@ -89,5 +92,6 @@ public class Main {
                 exchange.sendResponseHeaders(405, -1);
             }
         }
+
     }
 }
