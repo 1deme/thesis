@@ -14,17 +14,17 @@ import java.net.URLDecoder;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        // Get the port from the environment (default to 8080 if not set)
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
 
-        // Serve frontend.html at "/"
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        System.out.println("Server started on port " + port);
+
         server.createContext("/", new FileHandler());
-
-        // Keep your existing solve API
         server.createContext("/solve", new SolveHandler());
 
         server.setExecutor(null); // Default executor
         server.start();
-        System.out.println("Server started on port 8080");
     }
 
     static class FileHandler implements HttpHandler {
