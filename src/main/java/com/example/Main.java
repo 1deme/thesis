@@ -74,7 +74,14 @@ public class Main {
                     com.example.Sim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
                     com.example.parser.RelationsParser.parse(relations);
 
-                    String result = com.example.Sim.solve();
+                    String result = "";
+                    if(!com.example.relations.relationCollection.checkTransitivity()){
+                        result = "The relation is not transitive.";                        
+                    }
+                    else{
+                        result = com.example.Sim.solve();
+                    }
+
                     com.example.Sim.solution.clear();
 
                     exchange.getResponseHeaders().set("Content-Type", "text/plain");
