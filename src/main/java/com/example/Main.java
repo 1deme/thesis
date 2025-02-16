@@ -13,7 +13,9 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
+        
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
         // Serve frontend.html at "/"

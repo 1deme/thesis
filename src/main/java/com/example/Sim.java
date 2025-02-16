@@ -1,5 +1,6 @@
 package com.example;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.variable;
@@ -20,7 +21,9 @@ public class Sim {
         while(disjunction.conjunctions.size() != 0){
             sim(disjunction.conjunctions.remove(0));
         }
-        return solution.stream().reduce("", (a, b) -> a + b);
+        disjunction.conjunctions.clear();
+        com.example.relations.relationCollection.collection.clear();
+        return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ "));
     }
 
     public static boolean sim(Conjunction conjunction){
@@ -59,7 +62,9 @@ public class Sim {
             }
             throw new UnsupportedOperationException("Pattern not recognized");
         }
-        solution.add(conjunction.solutionString());
+        if(conjunction.solution.size() != 0){    
+            solution.add(conjunction.solutionString());
+        }
         return true;
     }
 
