@@ -79,13 +79,17 @@ public class Main {
 
                     String result = "";
                     if(!com.example.relations.relationCollection.checkTransitivity()){
+                        System.out.println("im here");
                         result = "The relation is not transitive.";                        
                     }
                     else{
+                        System.out.println("im there");
                         result = com.example.Sim.solve();
                     }
 
                     com.example.Sim.solution.clear();
+                    com.example.Sim.disjunction.conjunctions.clear();
+                    com.example.relations.relationCollection.collection.clear();
 
                     exchange.getResponseHeaders().set("Content-Type", "text/plain");
                     exchange.sendResponseHeaders(200, result.length());

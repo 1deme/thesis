@@ -36,6 +36,8 @@ public class relationCollection {
             if (!elements.contains(relation.el2)) elements.add(relation.el2);
         }
 
+        System.out.println(elements);
+
         // Check transitivity for all x, y, z combinations
         for (FunctionSymbol x : elements) {
             for (FunctionSymbol y : elements) {
