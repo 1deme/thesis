@@ -27,4 +27,33 @@ public class relationCollection {
 
         return .0;
     }
+
+    public static boolean checkTransitivity() {
+        // Get all unique FunctionSymbols in the collection
+        List<FunctionSymbol> elements = new LinkedList<>();
+        for (Relation relation : collection) {
+            if (!elements.contains(relation.el1)) elements.add(relation.el1);
+            if (!elements.contains(relation.el2)) elements.add(relation.el2);
+        }
+
+        System.out.println(elements);
+
+        // Check transitivity for all x, y, z combinations
+        for (FunctionSymbol x : elements) {
+            for (FunctionSymbol y : elements) {
+                for (FunctionSymbol z : elements) {
+                    double Rxy = lookup(x, y);
+                    double Rxz = lookup(x, z);
+                    double Rzy = lookup(z, y);
+                    
+                    // Check if fuzzy transitivity condition is violated
+                    if (Rxy < Math.min(Rxz, Rzy)) {
+                        return false; // Transitivity is violated
+                    }
+                }
+            }
+        }
+
+        return true; // All checks passed, the relation is transitive
+    }
 }

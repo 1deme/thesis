@@ -13,7 +13,9 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
+
         // Get the port from the environment (default to 8080 if not set)
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
 
@@ -74,8 +76,19 @@ public class Main {
                     com.example.Sim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
                     com.example.parser.RelationsParser.parse(relations);
 
-                    String result = com.example.Sim.solve();
+                    String result = "";
+                    if(!com.example.relations.relationCollection.checkTransitivity()){
+                        System.out.println("im here");
+                        result = "The relation is not transitive.";                        
+                    }
+                    else{
+                        System.out.println("im there");
+                        result = com.example.Sim.solve();
+                    }
+
                     com.example.Sim.solution.clear();
+                    com.example.Sim.disjunction.conjunctions.clear();
+                    com.example.relations.relationCollection.collection.clear();
 
                     exchange.getResponseHeaders().set("Content-Type", "text/plain");
                     exchange.sendResponseHeaders(200, result.length());

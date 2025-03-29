@@ -20,7 +20,7 @@
             margin-top: 10px;
         }
         input, button {
-            width: 500px;
+            width: 700px;
             padding: 10px;
             font-size: 16px;
             margin-top: 5px;
@@ -40,6 +40,9 @@
         }
         button:hover {
             background-color: #218838;
+        }
+        li {
+            padding: 3px 0; /* Adds vertical spacing */
         }
         .rules {
             margin-top: 20px;
@@ -75,9 +78,18 @@
         }
     </style>
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6H7TB0EE43"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-6H7TB0EE43');
+</script>
 <body>
 
-    <h1>Equation Solver</h1>
+    <h1>SolveSim</h1>
 
     <p>This is java implementatino of algorithm described in Similarity-Based Constraint Solving Modulo Commutativity: A Unified Framework</p>
 
@@ -100,19 +112,26 @@
     <div class="rules">
         <h2> Input Syntax: </h2>
         <ul>
-            <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_u, g_u</li>
-            <li>A lower case character followed by "_u" is an unordered function symbol. e.g f_o, g_o</li>
+            <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_o, g_o</li>
+            <li>A lower case character followed by "_u" is an unordered function symbol. e.g f_u, g_u</li>
             <li>An uppercase alphabet character without "_o" or "_u" is a variable. e.g X, Y, M</li>
-            <li>An \/ must be used for OR and /\ for AND</li>
-            <li>Equations must be in Disjunctive Normal Form (DNF). Brackets must be used for each conjunction.</li>
+            <li>Constraints are entered in the form <strong>Term ~= cut_value Term</strong>, where cut_value is a number between 0 and 1. e.g X ~= 0.3 f_o(Y)</li>
+            <li>Conjunction are entered in the form <strong>(Constraint /\ Constraint ...)</strong> e.g (X ~= 0.3 f_o(Y) /\ f_o(G) ~= 0.5 g_o(M))</li>
+            <li>Disjunction is entered in the form <strong>Conjunction \/ Conjunction</strong></li>
+            <li>Equations must be in Disjunctive Normal Form (DNF).</li>
+            <li>The relation must be transitive. Reflexivity and symmetry are guaranteed without being explicitly stated.</li>
         </ul>
     </div>
     <div class="rules">
         <h2> Some Example: </h2>
         <p>click on them to try</p>
         <ul>
-            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= g_u(g_o(a, y), b). cut_value = 0.4. Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
-            <li onclick="fillWithExamples2()" >(f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). cut_value = 0.4. Relations: (f_o, g_o, 0.5), (h_o, g_o, 0.3)</li>
+            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= 0.4 g_u(g_o(a, y), b). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3), (f_o, h_u, 0.3)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\ X ~= 0.3 k_o) \/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). Relations: (f_o, g_o, 0.5)</li>
+            <li onclick="fillWithExamples3()" >(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\ g_u ~= 0.01 k_u). Relations: (f_u, m_u, 0.6), (g_u, k_u, 0.4)</li>
+            <li onclick="fillWithExamples4()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.5), (g_u, h_u, 0.5), (f_u, h_u, 0.2)</li>
+            <li onclick="fillWithExamples5()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)</li>
+
         </ul>
     </div>
 
@@ -127,6 +146,7 @@
             try {
 
                 // Send POST request to the backend
+
                 const response = await fetch("https://thesis-production-5dd7.up.railway.app/solve", {
                     method: "POST",
                     headers: {
@@ -151,12 +171,27 @@
     
         function fillWithExamples() {
             document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o), Y, h_o(X, Y)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3)";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3), (f_o, h_u, 0.3)";
         }
 
         function fillWithExamples2() {
-            document.getElementById("equation1").value = "(f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
+            document.getElementById("equation1").value = "(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\\ X ~= 0.3 k_o) \\/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
             document.getElementById("equation2").value = "(f_u, g_u, 0.6)";
+        }
+
+        function fillWithExamples3() {
+            document.getElementById("equation1").value = "(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\\ g_u ~= 0.01 k_u)";
+            document.getElementById("equation2").value = "(f_u, m_u, 0.6), (g_u, k_u, 0.4)";
+        }
+
+        function fillWithExamples4() {
+            document.getElementById("equation1").value = "( f_u(X) ~= 0.5 g_u(Y) /\\ g_u(Y) ~= 0.5 h_u(Z) /\\ f_u(X) ~= 0.2 h_u(Z) )";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.5), (g_u, h_u, 0.5), (f_u, h_u, 0.2)";
+        }
+
+        function fillWithExamples5() {
+            document.getElementById("equation1").value = "( f_u(X) ~= 0.5 g_u(Y) /\\ g_u(Y) ~= 0.5 h_u(Z) /\\ f_u(X) ~= 0.2 h_u(Z) )";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)";
         }
 
     </script>

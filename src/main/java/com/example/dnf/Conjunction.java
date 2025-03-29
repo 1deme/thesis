@@ -47,7 +47,10 @@ public class Conjunction {
     }
 
     public Conjunction createCopy(){
-        return new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
+        Conjunction copy = new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
+        copy.proximtyDegree = proximtyDegree;
+        copy.solution = solution.stream().map(x -> x.createCopy()).collect(Collectors.toList());
+        return copy;
     }
 
     public void add(SimilarityPredicate pc){
