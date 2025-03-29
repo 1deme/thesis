@@ -15,18 +15,18 @@ import java.net.URLDecoder;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        // Serve frontend.html at "/"
+        // Get the port from the environment (default to 8080 if not set)
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        System.out.println("Server started on port " + port);
+
         server.createContext("/", new FileHandler());
-
-        // Keep your existing solve API
         server.createContext("/solve", new SolveHandler());
 
         server.setExecutor(null); // Default executor
         server.start();
-        System.out.println("Server started on port 8080");
     }
 
     static class FileHandler implements HttpHandler {
@@ -48,20 +48,19 @@ public class Main {
             }
         }
     }
-    
+
 
     static class SolveHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            System.out.println("Received request: " + exchange.getRequestMethod());
-
+            // Handle CORS preflight requests
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
             exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization");
             exchange.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
 
             if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
-                exchange.sendResponseHeaders(200, -1);
+                exchange.sendResponseHeaders(204, -1); // No Content
                 return;
             }
 
@@ -102,8 +101,9 @@ public class Main {
                     exchange.sendResponseHeaders(500, -1);
                 }
             } else {
-                exchange.sendResponseHeaders(405, -1);
+                exchange.sendResponseHeaders(405, -1); // Method Not Allowed
             }
         }
     }
+
 }
