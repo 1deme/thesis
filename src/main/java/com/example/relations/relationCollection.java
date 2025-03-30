@@ -28,6 +28,19 @@ public class relationCollection {
         return .0;
     }
 
+    public static List<FunctionSymbol> getneighborhood(FunctionSymbol el, Double threshold) {
+        List<FunctionSymbol> neighborhood = new LinkedList<>();
+        for (Relation rel : collection) {
+            if (rel.el1.toString().equals(el.toString()) && rel.value >= threshold) {
+                neighborhood.add(rel.el2);
+            }
+            if (rel.el2.toString().equals(el.toString()) && rel.value >= threshold) {
+                neighborhood.add(rel.el1);
+            }
+        }
+        return neighborhood;
+    }
+
     public static boolean checkTransitivity() {
         // Get all unique FunctionSymbols in the collection
         List<FunctionSymbol> elements = new LinkedList<>();

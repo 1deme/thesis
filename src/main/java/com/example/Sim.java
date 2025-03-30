@@ -23,6 +23,7 @@ public class Sim {
         }
         disjunction.conjunctions.clear();
         com.example.relations.relationCollection.collection.clear();
+        com.example.utils.FreshSymbolGenerator.usedChars.clear();
         return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ "));
     }
 

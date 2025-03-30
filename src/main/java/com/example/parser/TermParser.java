@@ -35,6 +35,7 @@ public class TermParser {
 
     private static variable parseVariable(String input) {
         char name = input.charAt(0);
+        com.example.utils.FreshSymbolGenerator.usedChars.add(name);
         return new variable(name);
     }
 
@@ -52,7 +53,6 @@ public class TermParser {
 
             String argsStr = matcher.group(3);
             Term[] args = argsStr != null ? parseArguments(argsStr) : new Term[0];
-
             return new FunctionApplication(functionSymbol, args);
         } else {
             throw new IllegalArgumentException("Invalid function application: " + input);
@@ -62,6 +62,7 @@ public class TermParser {
     private static FunctionSymbol parseFunctionSymbol(String input) {
         char name = input.charAt(0);
         boolean isOrdered = input.endsWith("_o");
+        com.example.utils.FreshSymbolGenerator.usedChars.add(name);
         return new FunctionSymbol(name, isOrdered);
     }
 
