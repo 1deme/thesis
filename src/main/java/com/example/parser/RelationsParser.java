@@ -21,7 +21,7 @@ public class RelationsParser {
             FunctionSymbol functionSymbol1 = parseFunctionSymbol(functionSymbol1Str);
             FunctionSymbol functionSymbol2 = parseFunctionSymbol(functionSymbol2Str);
 
-            com.example.Sim.relationCollection.add(functionSymbol1, functionSymbol2, value);
+            com.example.algorithm.SolveSim.relationCollection.add(functionSymbol1, functionSymbol2, value);
         }
     }
 

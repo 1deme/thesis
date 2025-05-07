@@ -30,6 +30,7 @@ public class relationCollection {
 
     public static List<FunctionSymbol> getneighborhood(FunctionSymbol el, Double threshold) {
         List<FunctionSymbol> neighborhood = new LinkedList<>();
+        neighborhood.add(el);
         for (Relation rel : collection) {
             if (rel.el1.toString().equals(el.toString()) && rel.value >= threshold) {
                 neighborhood.add(rel.el2);

@@ -2,6 +2,9 @@ package com.example;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
+import com.example.algorithm.SolPc;
+import com.example.algorithm.SolSc;
+import com.example.algorithm.SolTransformation;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -72,22 +75,29 @@ public class Main {
                     String[] inputs = body.split("&");
                     String equation1 = URLDecoder.decode(inputs[0].split("=")[1], StandardCharsets.UTF_8);
                     String relations = URLDecoder.decode(inputs[1].split("=")[1], StandardCharsets.UTF_8);
+                    String proximityValue = URLDecoder.decode(inputs[2].split("=")[1], StandardCharsets.UTF_8);
 
-                    com.example.Sim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
+                    com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
                     com.example.parser.RelationsParser.parse(relations);
 
                     String result = "";
                     if(!com.example.relations.relationCollection.checkTransitivity()){
-                        System.out.println("im here");
                         result = "The relation is not transitive.";                        
                     }
                     else{
-                        System.out.println("im there");
-                        result = com.example.Sim.solve();
+                        SolTransformation solverInstance;
+                        if("true".equalsIgnoreCase(proximityValue)){
+                            solverInstance = new SolPc();
+                        }
+                        else{
+                            solverInstance = new SolSc();
+                        }
+                        result = com.example.algorithm.SolveSim.solve(solverInstance);
+                        System.out.println(result);
                     }
 
-                    com.example.Sim.solution.clear();
-                    com.example.Sim.disjunction.conjunctions.clear();
+                    com.example.algorithm.SolveSim.solution.clear();
+                    com.example.algorithm.SolveSim.disjunction.conjunctions.clear();
                     com.example.relations.relationCollection.collection.clear();
 
                     exchange.getResponseHeaders().set("Content-Type", "text/plain");

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.algorithm;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,16 +10,16 @@ import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
 import java.util.ArrayList;
 
-public class Sim {
+public class SolveSim {
 
     public static Disjunction disjunction = new Disjunction(new ArrayList<>());
     public static relationCollection relationCollection = new relationCollection();
     public static List<String> solution = new ArrayList<>();
 
 
-    public static String solve(){
+    public static String solve(SolTransformation solOp){
         while(disjunction.conjunctions.size() != 0){
-            sim(disjunction.conjunctions.remove(0));
+            sim(disjunction.conjunctions.remove(0), solOp);
         }
         disjunction.conjunctions.clear();
         com.example.relations.relationCollection.collection.clear();
@@ -27,7 +27,7 @@ public class Sim {
         return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ "));
     }
 
-    public static boolean sim(Conjunction conjunction){
+    public static boolean sim(Conjunction conjunction, SolTransformation solOp){
         
         while(conjunction.constraints.size() != 0){
 
@@ -53,7 +53,7 @@ public class Sim {
                 continue;
             }
             if(SolSUCond(similarityPredicate)){
-                SolSUOp(similarityPredicate, conjunction);
+                solOp.apply(similarityPredicate, conjunction);
                 continue;
             }
             if(ConfFSCond(similarityPredicate) || ConfUFSCond(similarityPredicate) || 
@@ -217,7 +217,7 @@ public class Sim {
         );
     }
 
-    public static void SolSUOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
+    public static void SolOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         conjunction.solution.add(similarityPredicate);
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }

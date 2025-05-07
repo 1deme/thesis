@@ -27,6 +27,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        input[type="checkbox"] {
+            width: auto;
+            padding: 0;
+            margin-right: 5px;
+        }
         input::placeholder {
             color: #888;
         }
@@ -99,6 +104,12 @@
 
         <label for="equation2">Relations:</label>
         <input type="text" id="equation2" name="equation2" required>
+        
+        <!-- Inserted Checkbox -->
+        <label for="proximity">
+            <input type="checkbox" id="proximity" name="proximity">
+            Proximity
+        </label>
 
         <br>
         <button type="submit">Solve</button>
@@ -131,7 +142,6 @@
             <li onclick="fillWithExamples3()" >(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\ g_u ~= 0.01 k_u). Relations: (f_u, m_u, 0.6), (g_u, k_u, 0.4)</li>
             <li onclick="fillWithExamples4()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.5), (g_u, h_u, 0.5), (f_u, h_u, 0.2)</li>
             <li onclick="fillWithExamples5()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)</li>
-
         </ul>
     </div>
 
@@ -141,23 +151,23 @@
             
             // Get form data
             const equation1 = document.getElementById("equation1").value;
-            const equation2 = document.getElementById("equation2").value;
+            const relations = document.getElementById("equation2").value;
+            const proximity = document.getElementById("proximity").checked;
             
             try {
 
                 // Send POST request to the backend
 
-                const response = await fetch("http://localhost:8080/", {
+                const response = await fetch("/solve", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: `equation1=${encodeURIComponent(equation1)}&equation2=${encodeURIComponent(equation2)}`,
-                    mode: "no-cors"
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `equation1=${encodeURIComponent(equation1)}&relations=${encodeURIComponent(relations)}&proximityValue=${proximity}`
+                    
                 });
 
                 if (response.ok) {
                     const result = await response.text();
+                    alert(result);
                     document.getElementById("result").textContent = "";
                     document.getElementById("result").textContent = result;
                 } else {
@@ -165,6 +175,7 @@
                 }
 
             } catch (error) {
+                alert("not defined");
                 document.getElementById("result").textContent = `Error: ${error.message}`;
             }
         });
@@ -193,7 +204,6 @@
             document.getElementById("equation1").value = "( f_u(X) ~= 0.5 g_u(Y) /\\ g_u(Y) ~= 0.5 h_u(Z) /\\ f_u(X) ~= 0.2 h_u(Z) )";
             document.getElementById("equation2").value = "(f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)";
         }
-
-    </script>
+</script>
 </body>
 </html>
