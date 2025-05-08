@@ -93,6 +93,7 @@ public class SolveSim {
             similarityPredicate.el2 instanceof FunctionApplication &&
             !similarityPredicate.el1.isOrdered() &&
             !similarityPredicate.el2.isOrdered() &&
+            similarityPredicate.el1.arity() == similarityPredicate.el2.arity() &&
             com.example.relations.relationCollection.lookup(
                 ((FunctionApplication) similarityPredicate.el1).functionSymbol,
                 ((FunctionApplication) similarityPredicate.el2).functionSymbol

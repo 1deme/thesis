@@ -12,11 +12,17 @@ import com.example.predicates.SimilarityPredicate;
 public class SolPc implements SolTransformation {
     @Override
     public void apply(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
+        if(similarityPredicate.el2.isVariable()){
+            return;
+        }
         List<FunctionSymbol> neighbors =
-         com.example.relations.relationCollection.getneighborhood((FunctionSymbol )similarityPredicate.el1, similarityPredicate.CutValue);
+         com.example.relations.relationCollection.getneighborhood(((FunctionApplication)similarityPredicate.el2).functionSymbol, similarityPredicate.CutValue);
         for (FunctionSymbol neighbor : neighbors) {
 
-            double newCutVal = com.example.relations.relationCollection.lookup(neighbor, ((FunctionApplication) similarityPredicate.el2).functionSymbol);
+            double newCutVal = Math.min(
+                similarityPredicate.CutValue, 
+                com.example.relations.relationCollection.lookup(neighbor, ((FunctionApplication) similarityPredicate.el2).functionSymbol)
+            );
 
             Term newTerm = constructNewTerm(neighbor, similarityPredicate.el2.arity());
             Conjunction newConjunction = conjunction.createCopy();

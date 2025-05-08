@@ -167,7 +167,6 @@
 
                 if (response.ok) {
                     const result = await response.text();
-                    alert(result);
                     document.getElementById("result").textContent = "";
                     document.getElementById("result").textContent = result;
                 } else {
@@ -175,7 +174,6 @@
                 }
 
             } catch (error) {
-                alert("not defined");
                 document.getElementById("result").textContent = `Error: ${error.message}`;
             }
         });

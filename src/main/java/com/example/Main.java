@@ -81,19 +81,13 @@ public class Main {
                     com.example.parser.RelationsParser.parse(relations);
 
                     String result = "";
-                    if(!com.example.relations.relationCollection.checkTransitivity()){
-                        result = "The relation is not transitive.";                        
-                    }
-                    else{
-                        SolTransformation solverInstance;
-                        if("true".equalsIgnoreCase(proximityValue)){
-                            solverInstance = new SolPc();
-                        }
-                        else{
-                            solverInstance = new SolSc();
-                        }
+                    boolean isProximityTrue = "true".equalsIgnoreCase(proximityValue);
+
+                    if (isProximityTrue && !com.example.relations.relationCollection.checkTransitivity()) {
+                        result = "The relation is not transitive.";
+                    } else {
+                        SolTransformation solverInstance = isProximityTrue ? new SolPc() : new SolSc();
                         result = com.example.algorithm.SolveSim.solve(solverInstance);
-                        System.out.println(result);
                     }
 
                     com.example.algorithm.SolveSim.solution.clear();
