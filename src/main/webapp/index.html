@@ -65,7 +65,6 @@
         }
         .result {
             font-size: 18px;
-            color: green;
             font-weight: bold;
             white-space: pre-wrap;
         }
@@ -94,9 +93,9 @@
 </script>
 <body>
 
-    <h1>SolveSim</h1>
+    <h1>Fuzzy Similarity and Proximity Constraint Solving in Commutative Theories</h1>
 
-    <p>This is java implementatino of algorithm described in Similarity-Based Constraint Solving Modulo Commutativity: A Unified Framework</p>
+    <p>This is the Java implementation of the algorithms 'SolveSim' and 'SolveProx'.</p>
 
     <form id="equation-form">
         <label for="equation1">Equation:</label>
@@ -117,7 +116,8 @@
 
     <div class="result-container">
         <p class="result-label">Result:</p>
-        <div class="result" id="result"></div>
+        <textarea class="result" id="result" name="message" rows="4" cols="62">
+        </textarea>
     </div>
 
     <div class="rules">
@@ -137,11 +137,11 @@
         <h2> Some Example: </h2>
         <p>click on them to try</p>
         <ul>
-            <li onclick="fillWithExamples()" >f_u(x, fo(x, b), y, ho(x, y)) ~= 0.4 g_u(g_o(a, y), b). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3), (f_o, h_u, 0.3)</li>
-            <li onclick="fillWithExamples2()" >(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\ X ~= 0.3 k_o) \/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o)). Relations: (f_o, g_o, 0.5)</li>
-            <li onclick="fillWithExamples3()" >(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\ g_u ~= 0.01 k_u). Relations: (f_u, m_u, 0.6), (g_u, k_u, 0.4)</li>
-            <li onclick="fillWithExamples4()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.5), (g_u, h_u, 0.5), (f_u, h_u, 0.2)</li>
-            <li onclick="fillWithExamples5()" >( f_u(X) ~= 0.5 g_u(Y) /\ g_u(Y) ~= 0.5 h_u(Z) /\ f_u(X) ~= 0.2 h_u(Z) ). Relations: (f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)</li>
+            <li onclick="fillWithExamples()" >(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z))). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3),
+                (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)
+                </li>
+            <li onclick="fillWithExamples2()" >(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o)). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)</li>
+            <li onclick="fillWithExamples3()" >((f_o(X, h_o(a_o)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))). Relations: (f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)</li>
         </ul>
     </div>
 
@@ -179,28 +179,18 @@
         });
     
         function fillWithExamples() {
-            document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o), Y, h_o(X, Y)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_u, g_o, 0.3), (f_o, h_u, 0.3)";
+            document.getElementById("equation1").value = "(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z)))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3), (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)";
         }
 
         function fillWithExamples2() {
-            document.getElementById("equation1").value = "(f_u(X) ~= 0.1 g_u(g_u(X), f_o(Y), M) /\\ X ~= 0.3 k_o) \\/ (f_u(X, Y) ~= 0.4 g_u(a_o, b_o))";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6)";
+            document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
+            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)";
         }
 
         function fillWithExamples3() {
-            document.getElementById("equation1").value = "(f_u(g_u(X)) ~= 0.1 m_u(k_u(f_u, m_u, g_o))  /\\ g_u ~= 0.01 k_u)";
-            document.getElementById("equation2").value = "(f_u, m_u, 0.6), (g_u, k_u, 0.4)";
-        }
-
-        function fillWithExamples4() {
-            document.getElementById("equation1").value = "( f_u(X) ~= 0.5 g_u(Y) /\\ g_u(Y) ~= 0.5 h_u(Z) /\\ f_u(X) ~= 0.2 h_u(Z) )";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.5), (g_u, h_u, 0.5), (f_u, h_u, 0.2)";
-        }
-
-        function fillWithExamples5() {
-            document.getElementById("equation1").value = "( f_u(X) ~= 0.5 g_u(Y) /\\ g_u(Y) ~= 0.5 h_u(Z) /\\ f_u(X) ~= 0.2 h_u(Z) )";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.2), (g_u, h_u, 0.2), (f_u, h_u, 0.2)";
+            document.getElementById("equation1").value = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
+            document.getElementById("equation2").value = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
         }
 </script>
 </body>
