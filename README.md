@@ -1,6 +1,5 @@
-# Similarity-Based Constraint Solver Modulo Commutativity
+# Fuzzy Similarity and Proximity Constraint Solving in Commutative Theories
 
-Fuzzy Similarity and Proximity Constraint Solving in Commutative Theories
 
 ## Features
 
