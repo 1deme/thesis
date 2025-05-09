@@ -62,6 +62,8 @@ public class relationCollection {
                     
                     // Check if fuzzy transitivity condition is violated
                     if (Rxy < Math.min(Rxz, Rzy)) {
+                        System.out.println(x.toString() + " " + y.toString() + " " + z.toString());
+                        System.out.println(Double.toString(Rxy) + " <= " + Double.toString(Rxz) + " " + Double.toString(Rzy));
                         return false; // Transitivity is violated
                     }
                 }

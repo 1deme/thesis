@@ -8,6 +8,9 @@ import com.example.dnf.Conjunction;
 import com.example.dnf.Disjunction;
 import com.example.predicates.SimilarityPredicate;
 import com.example.relations.relationCollection;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class SolveSim {
@@ -61,7 +64,6 @@ public class SolveSim {
             {
                 return false;
             }
-            throw new UnsupportedOperationException("Pattern not recognized");
         }
         if(conjunction.solution.size() != 0){    
             solution.add(conjunction.solutionString());
@@ -196,11 +198,12 @@ public class SolveSim {
             decOfSOp(
                 (FunctionApplication) prem,
                 (FunctionApplication) newF2, 
-                similarityPredicate.CutValue, conj);
-                conj.proximtyDegree = Math.min(
-                    conj.proximtyDegree,
-                    com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
-                );
+                similarityPredicate.CutValue, conj
+            );
+            conj.proximtyDegree = Math.min(
+                conj.proximtyDegree,
+                com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
+            );
             disjunction.add(conj);
         }
         decOfSOp(mem, newF2, similarityPredicate.CutValue, conjunction);
@@ -208,6 +211,7 @@ public class SolveSim {
             conjunction.proximtyDegree,
             com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
         );
+        //disjunction.add(conjunction);
         
 
     }
@@ -221,6 +225,28 @@ public class SolveSim {
     public static void SolOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
         conjunction.solution.add(similarityPredicate);
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
+    }
+
+    public static void main(String[] args) {
+        String equation1 = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
+        String relations = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
+        String proximityValue = "false";
+
+        com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
+        com.example.parser.RelationsParser.parse(relations);
+
+        String result = "";
+        boolean isProximity = "true".equalsIgnoreCase(proximityValue);
+
+        if (isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
+            result = "The relation is not transitive.";
+        } else {
+            SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
+            result = com.example.algorithm.SolveSim.solve(solverInstance);
+        }
+
+        System.out.println(result);
+
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.algorithm;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.example.constraintElements.FunctionApplication;
@@ -28,15 +30,21 @@ public class SolPc implements SolTransformation {
             Conjunction newConjunction = conjunction.createCopy();
             newConjunction.map((variable) similarityPredicate.el1, newTerm);
 
-            conjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
+            //conjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
+            newConjunction.solution = new LinkedList<>(conjunction.solution);
+            newConjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
+
             newConjunction.add(new SimilarityPredicate(newTerm, similarityPredicate.el2, newCutVal));
+            com.example.algorithm.SolveSim.disjunction.add(newConjunction);
         }
+        conjunction.solution.clear();
+        conjunction.constraints.clear();
     }
 
     static Term constructNewTerm(FunctionSymbol neighbor, int arity){
         Term[] args = new Term[arity];
         for(int i = 0; i < arity; i++){
-            args[i] = new variable(com.example.utils.FreshSymbolGenerator.generateFreshSymbol());
+            args[i] = new variable(com.example.utils.FreshSymbolGenerator.generateFreshVariable());
         }
         return new FunctionApplication(neighbor, args);
     }

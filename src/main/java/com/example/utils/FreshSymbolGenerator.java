@@ -13,13 +13,17 @@ public class FreshSymbolGenerator {
             if (usedChars.add(c)) return c;
         }
 
-        // Then uppercase letters
-        for (char c = 'A'; c <= 'Z'; c++) {
+        // Finally, use symbols
+        for (char c : SYMBOLS) {
             if (usedChars.add(c)) return c;
         }
 
-        // Then digits
-        for (char c = '0'; c <= '9'; c++) {
+        return null; // No fresh symbol left
+    }
+
+    public static Character generateFreshVariable() {
+        // Then uppercase letters
+        for (char c = 'A'; c <= 'Z'; c++) {
             if (usedChars.add(c)) return c;
         }
 

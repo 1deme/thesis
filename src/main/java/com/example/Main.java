@@ -19,7 +19,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        // Get the port from the environment (default to 8080 if not set)
         int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -81,12 +80,12 @@ public class Main {
                     com.example.parser.RelationsParser.parse(relations);
 
                     String result = "";
-                    boolean isProximityTrue = "true".equalsIgnoreCase(proximityValue);
+                    boolean isProximity = "true".equalsIgnoreCase(proximityValue);
 
-                    if (isProximityTrue && !com.example.relations.relationCollection.checkTransitivity()) {
+                    if (isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
                         result = "The relation is not transitive.";
                     } else {
-                        SolTransformation solverInstance = isProximityTrue ? new SolPc() : new SolSc();
+                        SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
                         result = com.example.algorithm.SolveSim.solve(solverInstance);
                     }
 
