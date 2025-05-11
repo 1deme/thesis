@@ -34,22 +34,44 @@ public class Main {
     static class FileHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            // Adjust the path to point to the "static" directory
-            Path filePath = Path.of("src/main/webapp/index.html");
-            
-            if (Files.exists(filePath)) {
+            String requestedPath = exchange.getRequestURI().getPath();
+
+            if (requestedPath.equals("/")) {
+                requestedPath = "/index.html";
+            }
+
+            // Make sure path traversal is not possible
+            requestedPath = requestedPath.replace("..", "");
+
+            // Base directory for web files
+            Path baseDir = Path.of("src/main/webapp");
+            Path filePath = baseDir.resolve("." + requestedPath).normalize();
+
+            if (Files.exists(filePath) && filePath.startsWith(baseDir)) {
+                String contentType = guessContentType(filePath.toString());
                 byte[] response = Files.readAllBytes(filePath);
-                exchange.getResponseHeaders().set("Content-Type", "text/html");
+
+                exchange.getResponseHeaders().set("Content-Type", contentType);
                 exchange.sendResponseHeaders(200, response.length);
-                OutputStream os = exchange.getResponseBody();
-                os.write(response);
-                os.close();
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response);
+                }
             } else {
-                exchange.sendResponseHeaders(404, 0);
-                exchange.close();
+                exchange.sendResponseHeaders(404, -1);
             }
         }
+
+        private String guessContentType(String path) {
+            if (path.endsWith(".html")) return "text/html";
+            if (path.endsWith(".css")) return "text/css";
+            if (path.endsWith(".js")) return "application/javascript";
+            if (path.endsWith(".png")) return "image/png";
+            if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+            if (path.endsWith(".gif")) return "image/gif";
+            return "application/octet-stream";
+        }
     }
+
 
 
     static class SolveHandler implements HttpHandler {

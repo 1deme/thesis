@@ -35,14 +35,14 @@
         input::placeholder {
             color: #888;
         }
-        button {
-            background-color: #28a745;
-            color: white;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            margin-top: 15px;
-        }
+        /*button {*/
+        /*    background-color: #28a745;*/
+        /*    color: white;*/
+        /*    font-weight: bold;*/
+        /*    border: none;*/
+        /*    cursor: pointer;*/
+        /*    margin-top: 15px;*/
+        /*}*/
         button:hover {
             background-color: #218838;
         }
@@ -92,35 +92,15 @@
     gtag('config', 'G-6H7TB0EE43');
 </script>
 <body>
-
+<header style="display: flex; flex-direction: row; justify-content: space-between; background-color:#c7d8eb; width: 100%">
+    <img src="images/risc.png" alt="Description of the image" style="width: auto; height: 121px; margin-bottom: 20px;">
+    <img src="images/jku.png">
+</header>
     <h1>Fuzzy Similarity and Proximity Constraint Solving in Commutative Theories</h1>
 
     <p>This is the Java implementation of the algorithms 'SolveSim' and 'SolveProx'.</p>
 
-    <form id="equation-form">
-        <label for="equation1">Equation:</label>
-        <input type="text" id="equation1" name="equation1" required>
-
-        <label for="equation2">Relations:</label>
-        <input type="text" id="equation2" name="equation2" required>
-        
-        <!-- Inserted Checkbox -->
-        <label for="proximity">
-            <input type="checkbox" id="proximity" name="proximity">
-            Proximity
-        </label>
-
-        <br>
-        <button type="submit">Solve</button>
-    </form>
-
-    <div class="result-container">
-        <p class="result-label">Result:</p>
-        <textarea class="result" id="result" name="message" rows="4" cols="62">
-        </textarea>
-    </div>
-
-    <div class="rules">
+    <div class="">
         <h2> Input Syntax: </h2>
         <ul>
             <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_o, g_o</li>
@@ -132,8 +112,63 @@
             <li>Equations must be in Disjunctive Normal Form (DNF).</li>
             <li>The relation must be transitive. Reflexivity and symmetry are guaranteed without being explicitly stated.</li>
         </ul>
+
+        <table border="1" style="width:100%;">
+            <tbody><tr>
+                <td nowrap="nowrap">Unification problem:<br>(Use the semicolon to separate <br>the equations of the system.)</td>
+                <td><div style="padding-right:6px">
+                    <textarea name="problemset" id="problemset" rows="5" cols="100" style="width:100%"></textarea>
+                </div></td>
+            </tr>
+            <tr>
+                <td>Relation:</td>
+                <td><textarea type="text" name="relation" id ="relation" value=""  style="width: 100%"> </textarea></td>
+            </tr>
+<!--            <tr>-->
+<!--                <td>Maximum derivation depth:</td>-->
+<!--                <td><textarea type="text" name="maxDepth" value="100"  style="width: 100%"> </textarea></td>-->
+<!--            </tr>-->
+
+            <tr>
+                <td>Proximity: </td>
+                <td><input type="checkbox" name="proximity" id="prox" value="true" checked=""></td>
+            </tr>
+            <tr>
+                <td>Result:</td>
+                <td><textarea type="text" name="result" id = "res" value=""  style="width: 100%"> </textarea></td>            </tr>
+            <tr>
+                <td colspan="2" align="start">
+
+                    <button style="width: 150px; padding: 0px" type="button" id="solveButton">Start computation</button>
+                </td>
+            </tr>
+            </tbody></table>
     </div>
-    <div class="rules">
+
+<!--    <form id="equation-form">-->
+<!--        <label for="equation1">Equation:</label>-->
+<!--        <input type="text" id="equation1" name="equation1" required>-->
+
+<!--        <label for="equation2">Relations:</label>-->
+<!--        <input type="text" id="equation2" name="equation2" required>-->
+<!--        -->
+<!--        &lt;!&ndash; Inserted Checkbox &ndash;&gt;-->
+<!--        <label for="proximity">-->
+<!--            <input type="checkbox" id="proximity" name="proximity">-->
+<!--            Proximity-->
+<!--        </label>-->
+
+<!--        <br>-->
+<!--        <button type="submit">Solve</button>-->
+<!--    </form>-->
+
+<!--    <div class="result-container">-->
+<!--        <p class="result-label">Result:</p>-->
+<!--        <textarea class="result" id="result" name="message" rows="4" cols="62">-->
+<!--        </textarea>-->
+<!--    </div>-->
+
+
         <h2> Some Example: </h2>
         <p>click on them to try</p>
         <ul>
@@ -143,16 +178,20 @@
             <li onclick="fillWithExamples2()" >(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o)). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)</li>
             <li onclick="fillWithExamples3()" >((f_o(X, h_o(a_o)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))). Relations: (f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)</li>
         </ul>
-    </div>
+
 
 <script>
-        document.getElementById("equation-form").addEventListener("submit", async function(event) {
+        document.getElementById("solveButton").addEventListener("click", async function(event) {
             event.preventDefault(); // Prevent form from reloading the page
             
             // Get form data
-            const equation1 = document.getElementById("equation1").value;
-            const relations = document.getElementById("equation2").value;
-            const proximity = document.getElementById("proximity").checked;
+            const equation1 = document.getElementById("problemset").value;
+            const relations = document.getElementById("relation").value;
+            const proximity = document.getElementById("prox").checked;
+
+            console.log(equation1)
+            console.log(relations)
+
             
             try {
 
@@ -167,30 +206,30 @@
 
                 if (response.ok) {
                     const result = await response.text();
-                    document.getElementById("result").textContent = "";
-                    document.getElementById("result").textContent = result;
+                    document.getElementById("res").textContent = "";
+                    document.getElementById("res").textContent = result;
                 } else {
-                    document.getElementById("result").textContent = "Error: Unable to process the request.";
+                    document.getElementById("res").textContent = "Error: Unable to process the request.";
                 }
 
             } catch (error) {
-                document.getElementById("result").textContent = `Error: ${error.message}`;
+                document.getElementById("res").textContent = `Error: ${error.message}`;
             }
         });
     
         function fillWithExamples() {
-            document.getElementById("equation1").value = "(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z)))";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3), (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)";
+            document.getElementById("problemset").value = "(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z)))";
+            document.getElementById("relation").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3), (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)";
         }
 
         function fillWithExamples2() {
-            document.getElementById("equation1").value = "(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
-            document.getElementById("equation2").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)";
+            document.getElementById("problemset").value = "(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
+            document.getElementById("relation").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)";
         }
 
         function fillWithExamples3() {
-            document.getElementById("equation1").value = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
-            document.getElementById("equation2").value = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
+            document.getElementById("problemset").value = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
+            document.getElementById("relation").value = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
         }
 </script>
 </body>
