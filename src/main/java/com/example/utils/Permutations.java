@@ -8,31 +8,31 @@ import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
 
 public class Permutations {
-
     
-    public static List<FunctionApplication> generateInstances(FunctionSymbol functionSymbol, Term[] args) {
+    public static List<FunctionApplication> generatePermutations(FunctionSymbol functionSymbol, Term[] args, int arity) {
         List<FunctionApplication> instances = new ArrayList<>();
-        generatePermutations(args, 0, instances, functionSymbol);
+        boolean[] used = new boolean[args.length];
+        backtrack(args, arity, used, new ArrayList<>(), instances, functionSymbol);
         return instances;
     }
 
-    private static void generatePermutations(Term[] args, int start, List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
-        if (start == args.length - 1) {
-            // Add a new instance with the current permutation
-            instances.add(new FunctionApplication(functionSymbol, args.clone(), false));
+    private static void backtrack(Term[] args, int arity, boolean[] used, List<Term> current, 
+        List<FunctionApplication> instances, FunctionSymbol functionSymbol) {
+
+        if (current.size() == arity) {
+            Term[] permutation = current.toArray(new Term[0]);
+            instances.add(new FunctionApplication(functionSymbol, permutation));
             return;
         }
-        for (int i = start; i < args.length; i++) {
-            swap(args, i, start);
-            generatePermutations(args, start + 1, instances, functionSymbol);
-            swap(args, i, start); // backtrack
+
+        for (int i = 0; i < args.length; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                current.add(args[i]);
+                backtrack(args, arity, used, current, instances, functionSymbol);
+                current.remove(current.size() - 1);
+                used[i] = false;
+            }
         }
     }
-
-    private static void swap(Term[] args, int i, int j) {
-        Term temp = args[i];
-        args[i] = args[j];
-        args[j] = temp;
-    }
-
 }

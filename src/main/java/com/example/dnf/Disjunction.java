@@ -27,7 +27,7 @@ public class Disjunction {
             sb.append("(");
             sb.append(conjunctions.get(i));
             if (i < conjunctions.size() - 1) {
-                sb.append(" ∨ "); 
+                sb.append(" \\/ "); 
             }
             sb.append(")");
         }

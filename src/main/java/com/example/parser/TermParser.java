@@ -1,112 +1,96 @@
 package com.example.parser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.example.constraintElements.FunctionApplication;
 import com.example.constraintElements.FunctionSymbol;
 import com.example.constraintElements.Term;
-import com.example.constraintElements.TermVariable;
-import com.example.predicates.SimilarityPredicate;
+import com.example.constraintElements.variable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TermParser {
-    private final List<Token> tokens;
-    private int current = 0;
 
-    TermParser(List<Token> tokens){
-        this.tokens = tokens;
-    }
+    public static Term parse(String input) {
+        input = input.trim();
 
-    private Term parseFunction(boolean isOrdered){
-        String functionName = previous().value;
-        consume(TokenType.PAREN_OPEN, "Expected '(' after function name");
-
-        List<Term> arguments = new ArrayList<>();
-        if(!check(TokenType.PAREN_CLOSE)){
-            do {
-                arguments.add(parseTerm());
-            }while (match(TokenType.COMMA));
-        }
-        consume(TokenType.PAREN_CLOSE,"Expected ')' after function argument");
-        FunctionSymbol functionSymbol = new FunctionSymbol(functionName.charAt(0));
-        return new FunctionApplication(functionSymbol,arguments.toArray(new Term[0]),isOrdered);
-    }
-
-
-
-    public Term parseTerm(){
-        if(match(TokenType.VARIABLE)){
-            return new TermVariable(previous().value.charAt(0));
+        if (input.isEmpty()) {
+            throw new IllegalArgumentException("Input cannot be empty.");
         }
 
-        if (match(TokenType.FUNCTION_CONSTANT)){
-            char value = previous().value.charAt(0);
-            FunctionSymbol symbol = new FunctionSymbol(value);
-            return new FunctionApplication(symbol,new Term[0], true);
+        if (isVariable(input)) {
+            return parseVariable(input);
+        } else if (isFunctionSymbol(input)) {
+            return parseFunctionApplication(input);
+        } else {
+            throw new IllegalArgumentException("Invalid input: " + input);
+        }
+    }
+
+    private static boolean isVariable(String input) {
+        return input.length() == 1 && Character.isUpperCase(input.charAt(0));
+    }
+
+    private static variable parseVariable(String input) {
+        char name = input.charAt(0);
+        com.example.utils.FreshSymbolGenerator.usedChars.add(name);
+        return new variable(name);
+    }
+
+    private static boolean isFunctionSymbol(String input) {
+        return input.matches("[a-z]_[ou](\\(.*\\))?");
+    }
+
+    private static FunctionApplication parseFunctionApplication(String input) {
+        Pattern pattern = Pattern.compile("([a-z]_[ou])(\\((.*)\\))?");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.matches()) {
+            String functionSymbolStr = matcher.group(1);
+            FunctionSymbol functionSymbol = parseFunctionSymbol(functionSymbolStr);
+
+            String argsStr = matcher.group(3);
+            Term[] args = argsStr != null ? parseArguments(argsStr) : new Term[0];
+            return new FunctionApplication(functionSymbol, args);
+        } else {
+            throw new IllegalArgumentException("Invalid function application: " + input);
+        }
+    }
+
+    private static FunctionSymbol parseFunctionSymbol(String input) {
+        char name = input.charAt(0);
+        boolean isOrdered = input.endsWith("_o");
+        com.example.utils.FreshSymbolGenerator.usedChars.add(name);
+        return new FunctionSymbol(name, isOrdered);
+    }
+
+    // Updated parseArguments method to handle nested parentheses
+    private static Term[] parseArguments(String argsStr) {
+        List<String> argStrings = new ArrayList<>();
+        int depth = 0;
+        StringBuilder currentArg = new StringBuilder();
+
+        for (char c : argsStr.toCharArray()) {
+            if (c == '(') depth++;
+            else if (c == ')') depth--;
+
+            if (c == ',' && depth == 0) {
+                argStrings.add(currentArg.toString().trim());
+                currentArg.setLength(0);
+            } else {
+                currentArg.append(c);
+            }
         }
 
-        if(match(TokenType.ORDERED_FUNCTION)) {
-            return parseFunction(true);
+        if (currentArg.length() > 0) {
+            argStrings.add(currentArg.toString().trim());
         }
-        if(match(TokenType.UNORDERED_FUNCTION)){
-            return parseFunction(false);
-        }
-        throw new IllegalStateException("Unexpected token: " + peek());
-    }
 
-    private boolean match(TokenType type) {
-        if (check(type)) {
-            advance();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean check(TokenType type) {
-        return !isAtEnd() && peek().type == type;
-    }
-
-    private Token advance() {
-        return tokens.get(current++);
-    }
-
-    private Token peek() {
-        return tokens.get(current);
-    }
-
-    private Token previous() {
-        return tokens.get(current - 1);
-    }
-
-    private boolean isAtEnd() {
-        return current >= tokens.size();
-    }
-
-    private void consume(TokenType type, String message) {
-        if (check(type)) {
-            advance();
-            return;
-        }
-        throw new IllegalStateException(message);
-    }
-
-    public static void main(String[] args) {
-        String f = "f_u(a,f_u(a,b),g_u(n,m),c)";
-        List<Token> tokenList = new Lexer(f).tokenize();
-        System.out.println(tokenList);
-        TermParser parser = new TermParser(tokenList);
-        Term term = parser.parseTerm();
-        System.out.println(term);
-
-
-
-        String unificationProblem = "f_u(g_o(a),c) ~= f_u(x,b)";
-
-        SimilarityPredicate similarityPredicate = UnificationEquationParser.parse(unificationProblem, 0.5);
-
-        System.out.println(similarityPredicate);
-
-
+        return argStrings.stream()
+                         .map(TermParser::parse)
+                         .toArray(Term[]::new);
     }
 
 }

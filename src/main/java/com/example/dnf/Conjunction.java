@@ -3,8 +3,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.example.constraintElements.Element;
-
+import com.example.constraintElements.Term;
+import com.example.constraintElements.variable;
 import com.example.predicates.SimilarityPredicate;
 
 import java.util.LinkedList;
@@ -13,16 +13,18 @@ import java.util.LinkedList;
 public class Conjunction {
 
     public List<SimilarityPredicate> constraints = new LinkedList<SimilarityPredicate>();
+    public double proximtyDegree = 1;
+    public List<SimilarityPredicate> solution = new LinkedList<SimilarityPredicate>();
 
     public Conjunction(List<SimilarityPredicate> conjunction){
         this.constraints = conjunction;
     }
 
-    public void map(Element from, Element to){
+    public void map(variable from, Term to){
         constraints.stream().map(x -> x.map(from, to)).collect(Collectors.toList());
     }
 
-    public void map(Element from, Element to, Predicate<SimilarityPredicate> cond){
+    public void map(variable from, Term to, Predicate<SimilarityPredicate> cond){
         
         constraints.stream().map(x -> {
             if(cond.test(x)){
@@ -34,7 +36,7 @@ public class Conjunction {
         } ).collect(Collectors.toList());
     }
 
-    public boolean containt(Element el){
+    public boolean containt(Term el){
         
         for(SimilarityPredicate pc : constraints){
             if(pc.el1.contains(el) || pc.el2.contains(el)){
@@ -45,7 +47,27 @@ public class Conjunction {
     }
 
     public Conjunction createCopy(){
-        return new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
+        Conjunction copy = new Conjunction(constraints.stream().map(x -> x.createCopy()).collect(Collectors.toList()));
+        copy.proximtyDegree = proximtyDegree;
+        copy.solution = solution.stream().map(x -> x.createCopy()).collect(Collectors.toList());
+        return copy;
+    }
+
+    public void add(SimilarityPredicate pc){
+        constraints.add(pc);
+    }
+
+    public String solutionString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(" < ");
+        for (int i = 0; i < solution.size(); i++) {
+            sb.append(solution.get(i));
+            if (i < solution.size() - 1) {
+                sb.append(" /\\ "); 
+            }
+        }
+        sb.append("; " + proximtyDegree + " > ");
+        return sb.toString();
     }
 
     @Override
@@ -54,7 +76,7 @@ public class Conjunction {
         for (int i = 0; i < constraints.size(); i++) {
             sb.append(constraints.get(i));
             if (i < constraints.size() - 1) {
-                sb.append(" ∧ "); 
+                sb.append("/\\"); 
             }
         }
         return sb.toString();

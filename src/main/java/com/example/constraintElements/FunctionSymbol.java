@@ -1,38 +1,29 @@
 package com.example.constraintElements;
 
-public class FunctionSymbol implements Element{
-    char name;
+public class FunctionSymbol{
 
-    public FunctionSymbol (char name){
+    public char name;
+    public boolean isOrdered;
+
+    public FunctionSymbol (char name, boolean ordered){
         this.name = name;
+        this.isOrdered = ordered;
     }
 
     public String toString(){
-        return Character.toString(name);
+        return Character.toString(name) + (isOrdered ? "_o" : "_u");
     }
 
-    @Override
-    public Element map(Element from, Element to) {
-        if(this.equals(from)){
-            return to;
-        }
-        return this;
-    }
-
-    @Override
-    public boolean contains(Element el) {
-        return el == this;
-    }
-
-    @Override
-    public char getName() {
-        return name;
-    }
-
-    @Override
     public FunctionSymbol createCopy(){
-        return new FunctionSymbol(name);
+        return new FunctionSymbol(name, isOrdered);
     }
 
+    public FunctionSymbol clone(){
+        return new FunctionSymbol(name, isOrdered);
+    }
+
+    public boolean equals(FunctionSymbol other){
+        return this.name == other.name && this.isOrdered == other.isOrdered;
+    }
 
 }

@@ -6,22 +6,25 @@ public class FunctionApplication implements Term{
 
     public FunctionSymbol functionSymbol;
     public Term[] args;
-    private boolean isOrdered;
 
-    public FunctionApplication(FunctionSymbol functionSymbol, Term[] args, boolean isOrdered){
+    public FunctionApplication(char name, boolean isOrdered, Term[] args){
+        this.functionSymbol = new FunctionSymbol(name, isOrdered);
+        this.args = args;
+    }
+
+    public FunctionApplication(FunctionSymbol functionSymbol, Term[] args){
         this.functionSymbol = functionSymbol;
         this.args = args;
-        this.isOrdered = isOrdered;
     }
 
     @Override
-    public Element map(Element from, Element to) {
-        FunctionSymbol newFunctionSymbol = (FunctionSymbol) functionSymbol.map(from, to);
+    public Term map(variable from, Term to) {
+        FunctionSymbol newFunctionSymbol = functionSymbol.createCopy();
         Term[] newArgs = new Term[args.length];
         for(int i = 0; i < args.length; i++){
-            newArgs[i] = (Term) args[i].map(from, to);            
+            newArgs[i] = args[i].map(from, to);            
         }
-        return new FunctionApplication(newFunctionSymbol, newArgs, isOrdered);
+        return new FunctionApplication(newFunctionSymbol, newArgs);
     }
 
     @Override
@@ -33,10 +36,7 @@ public class FunctionApplication implements Term{
     }
 
     @Override
-    public boolean contains(Element el) {
-        if(functionSymbol.contains(el)){
-            return true;
-        }
+    public boolean contains(Term el) {
         for(int i = 0; i < args.length; i++){
             if(args[i].contains(el)){
                 return true;
@@ -45,12 +45,6 @@ public class FunctionApplication implements Term{
         return false;
     }
 
-    @Override
-    public boolean isAtomic(){
-        return args.length == 0;
-    }
-
-    
     @Override
     public char getName() {
         throw new UnsupportedOperationException("Unimplemented method 'contains'");
@@ -62,11 +56,37 @@ public class FunctionApplication implements Term{
         for(int i = 0; i < args.length; i++){
             copy[i] = (Term) args[i].createCopy();
         }
-        return new FunctionApplication(functionSymbol.createCopy(), copy, isOrdered);
+        return new FunctionApplication(functionSymbol.createCopy(), copy);
     }
 
+    @Override
+    public int arity() {
+        return args.length;
+    }
+
+    @Override
     public boolean isOrdered(){
-        return isOrdered;
+        return functionSymbol.isOrdered;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof FunctionApplication){
+            FunctionApplication other = (FunctionApplication) obj;
+            if(!functionSymbol.equals(other.functionSymbol)){
+                return false;
+            }
+            if(args.length != other.args.length){
+                return false;
+            }
+            for(int i = 0; i < args.length; i++){
+                if(!args[i].equals(other.args[i])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
     
 }
