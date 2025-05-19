@@ -10,7 +10,8 @@ public class RelationsParser {
     public static void parse(String input) {
         input = input.trim();
 
-        Pattern pattern = Pattern.compile("\\(([a-z]_[ou]),\\s*([a-z]_[ou]),\\s*([01]?\\.[0-9]+|[01])\\)");
+        Pattern pattern = Pattern.compile("\\(([a-z](?:_u)?),\\s*([a-z](?:_u)?),\\s*([01](?:\\.\\d+)?|0?\\.\\d+)\\)");
+        
         Matcher matcher = pattern.matcher(input);
 
         while (matcher.find()) {
@@ -27,7 +28,7 @@ public class RelationsParser {
 
     private static FunctionSymbol parseFunctionSymbol(String input) {
         char name = input.charAt(0);
-        boolean isOrdered = input.endsWith("_o");
+        boolean isOrdered = !input.endsWith("_u");
         return new FunctionSymbol(name, isOrdered);
     }
 }

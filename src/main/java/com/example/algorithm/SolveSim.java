@@ -25,7 +25,7 @@ public class SolveSim {
         disjunction.conjunctions.clear();
         com.example.relations.relationCollection.collection.clear();
         com.example.utils.FreshSymbolGenerator.usedChars.clear();
-        return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ "));
+        return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ \n"));
     }
 
     public static boolean sim(Conjunction conjunction, SolTransformation solOp){
@@ -225,26 +225,27 @@ public class SolveSim {
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }
 
-    // public static void main(String[] args) {
-    //     String equation1 = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
-    //     String relations = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
-    //     String proximityValue = "false";
+    public static void main(String[] args) {
+        
+        String equation1 = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
+        String relations = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
+        String proximityValue = "true";
 
-    //     com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
-    //     com.example.parser.RelationsParser.parse(relations);
+        com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
+        com.example.parser.RelationsParser.parse(relations);
 
-    //     String result = "";
-    //     boolean isProximity = "true".equalsIgnoreCase(proximityValue);
+        String result = "";
+        boolean isProximity = "true".equalsIgnoreCase(proximityValue);
 
-    //     if (isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
-    //         result = "The relation is not transitive.";
-    //     } else {
-    //         SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
-    //         result = com.example.algorithm.SolveSim.solve(solverInstance);
-    //     }
+        if (isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
+            result = "The relation is not transitive.";
+        } else {
+            SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
+            result = com.example.algorithm.SolveSim.solve(solverInstance);
+        }
 
-    //     System.out.println(result);
+        System.out.println(result);
 
-    // }
+    }
 
 }

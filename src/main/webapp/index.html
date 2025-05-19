@@ -107,11 +107,11 @@
     <div class="">
         <h2> Input Syntax: </h2>
         <ul>
-            <li>A lower case character followed by "_o" is an ordered function symbol. e.g f_o, g_o</li>
-            <li>A lower case character followed by "_u" is an unordered function symbol. e.g f_u, g_u</li>
-            <li>An uppercase alphabet character without "_o" or "_u" is a variable. e.g X, Y, M</li>
-            <li>Constraints are entered in the form <strong>Term ~= cut_value Term</strong>, where cut_value is a number between 0 and 1. e.g X ~= 0.3 f_o(Y)</li>
-            <li>Conjunction are entered in the form <strong>(Constraint /\ Constraint ...)</strong> e.g (X ~= 0.3 f_o(Y) /\ f_o(G) ~= 0.5 g_o(M))</li>
+            <li>A lower case alphabet character is an ordered function symbol. e.g f, g</li>
+            <li>A lower case alphabet character followed by "_u" is an unordered function symbol. e.g f_u, g_u</li>
+            <li>An uppercase alphabet character is a variable. e.g X, Y, M</li>
+            <li>Constraints are entered in the form <strong>Term ~ cut_value Term</strong>, where cut_value is a number between 0 and 1. e.g X ~ 0.3 f(Y)</li>
+            <li>Conjunction are entered in the form <strong>(Constraint /\ Constraint ...)</strong> e.g (X ~ 0.3 f(Y) /\ f(G) ~ 0.5 g(M))</li>
             <li>Disjunction is entered in the form <strong>Conjunction \/ Conjunction</strong></li>
             <li>Equations must be in Disjunctive Normal Form (DNF).</li>
             <li>The relation must be transitive. Reflexivity and symmetry are guaranteed without being explicitly stated.</li>
@@ -128,11 +128,6 @@
                 <td>Relation:</td>
                 <td><textarea type="text" name="relation" id ="relation" value=""  style="width: 100%"> </textarea></td>
             </tr>
-<!--            <tr>-->
-<!--                <td>Maximum derivation depth:</td>-->
-<!--                <td><textarea type="text" name="maxDepth" value="100"  style="width: 100%"> </textarea></td>-->
-<!--            </tr>-->
-
             <tr>
                 <td>Proximity: </td>
                 <td><input type="checkbox" name="proximity" id="prox" value="true" checked=""></td>
@@ -176,11 +171,11 @@
         <h2> Some Example: </h2>
         <p>click on them to try</p>
         <ul>
-            <li onclick="fillWithExamples()" >(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z))). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3),
-                (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)
+            <li onclick="fillWithExamples()" >(f_u(f(X, b), h(X, Y), Z) ~ 0.4 g_u(g(a, Y), b, f(X, Z))). Relations: (f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (b, f_u, 0.3),
+                (b, f, 0.3), (b, g_u, 0.3), (b, g, 0.3), (b, h, 0.3)
                 </li>
-            <li onclick="fillWithExamples2()" >(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o)). Relations: (f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)</li>
-            <li onclick="fillWithExamples3()" >((f_o(X, h_o(a_o)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))). Relations: (f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)</li>
+            <li onclick="fillWithExamples2()" >(f_u(X, f(X, b)) ~ 0.4 g_u(g(a, Y), b)). Relations: (f_u, g_u, 0.6), (f, g, 0.5), (h, g, 0.3), (f, h, 0.3)</li>
+            <li onclick="fillWithExamples3()" >((f(X, h(a)) ~ 0.4 g(h(a), p(b)))). Relations: (f, g, 0.9), (h, p, 0.7), (a, b, 0.6)</li>
         </ul>
 
 
@@ -222,18 +217,18 @@
         });
     
         function fillWithExamples() {
-            document.getElementById("problemset").value = "(f_u(f_o(X, b_o), h_o(X, Y), Z) ~= 0.4 g_u(g_o(a_o, Y), b_o, f_o(X, Z)))";
-            document.getElementById("relation").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (f_o, h_o, 0.4), (b_o, f_u, 0.3), (b_o, f_o, 0.3), (b_o, g_u, 0.3), (b_o, g_o, 0.3), (b_o, h_o, 0.3)";
+            document.getElementById("problemset").value = "(f_u(f(X, b), h(X, Y), Z) ~ 0.4 g_u(g(a, Y), b, f(X, Z)))";
+            document.getElementById("relation").value = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (b, f_u, 0.3), (b, f, 0.3), (b, g_u, 0.3), (b, g, 0.3), (b, h, 0.3)";
         }
 
         function fillWithExamples2() {
-            document.getElementById("problemset").value = "(f_u(X, f_o(X, b_o)) ~= 0.4 g_u(g_o(a_o, Y), b_o))";
-            document.getElementById("relation").value = "(f_u, g_u, 0.6), (f_o, g_o, 0.5), (h_o, g_o, 0.3), (f_o, h_o, 0.3)";
+            document.getElementById("problemset").value = "(f_u(X, f(X, b)) ~ 0.4 g_u(g(a, Y), b))";
+            document.getElementById("relation").value = "(f, g, 0.6), (f, g, 0.5), (h, g, 0.3), (f, h, 0.3)";
         }
 
         function fillWithExamples3() {
-            document.getElementById("problemset").value = "(f_o(X, h_o(Y)) ~= 0.4 g_o(h_o(a_o), p_o(b_o)))";
-            document.getElementById("relation").value = "(f_o, g_o, 0.9), (h_o, p_o, 0.7), (a_o, b_o, 0.6)";
+            document.getElementById("problemset").value = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
+            document.getElementById("relation").value = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
         }
 </script>
 </body>

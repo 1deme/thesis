@@ -40,18 +40,18 @@ public class TermParser {
     }
 
     private static boolean isFunctionSymbol(String input) {
-        return input.matches("[a-z]_[ou](\\(.*\\))?");
+        return input.matches("[a-z](_u)?(\\(.*\\))?");
     }
 
     private static FunctionApplication parseFunctionApplication(String input) {
-        Pattern pattern = Pattern.compile("([a-z]_[ou])(\\((.*)\\))?");
+        Pattern pattern = Pattern.compile("([a-z](_u)?)(\\((.*)\\))?");
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.matches()) {
             String functionSymbolStr = matcher.group(1);
             FunctionSymbol functionSymbol = parseFunctionSymbol(functionSymbolStr);
 
-            String argsStr = matcher.group(3);
+            String argsStr = matcher.group(4);
             Term[] args = argsStr != null ? parseArguments(argsStr) : new Term[0];
             return new FunctionApplication(functionSymbol, args);
         } else {
@@ -61,7 +61,7 @@ public class TermParser {
 
     private static FunctionSymbol parseFunctionSymbol(String input) {
         char name = input.charAt(0);
-        boolean isOrdered = input.endsWith("_o");
+        boolean isOrdered = !input.endsWith("_u");        
         com.example.utils.FreshSymbolGenerator.usedChars.add(name);
         return new FunctionSymbol(name, isOrdered);
     }

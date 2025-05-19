@@ -11,7 +11,7 @@ public class FunctionSymbol{
     }
 
     public String toString(){
-        return Character.toString(name) + (isOrdered ? "_o" : "_u");
+        return Character.toString(name) + (isOrdered ? "" : "_u");
     }
 
     public FunctionSymbol createCopy(){
