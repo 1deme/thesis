@@ -19,4 +19,6 @@
    ```sh
     localhost:8080/.
 
-or visit the deployed version linked in the sidebar.
+or visit the deployed versio
+
+[View the deployed site](https://thesis-production-5dd7.up.railway.app)
