@@ -16,7 +16,7 @@ public class SolveSim {
     public static Disjunction disjunction = new Disjunction(new ArrayList<>());
     public static relationCollection relationCollection = new relationCollection();
     public static List<String> solution = new ArrayList<>();
-
+    
 
     public static String solve(SolTransformation solOp){
         while(disjunction.conjunctions.size() != 0){
@@ -28,7 +28,7 @@ public class SolveSim {
         return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ \n"));
     }
 
-    public static boolean sim(Conjunction conjunction, SolTransformation solOp){
+    public static void sim(Conjunction conjunction, SolTransformation solOp){
         
         while(conjunction.constraints.size() != 0){
 
@@ -55,18 +55,17 @@ public class SolveSim {
             }
             if(SolSUCond(similarityPredicate)){
                 solOp.apply(similarityPredicate, conjunction);
-                continue;
+                return ;
             }
             if(ConfFSCond(similarityPredicate) || ConfUFSCond(similarityPredicate) || 
                 ConfOFSCond(similarityPredicate) || CheckOccCond(similarityPredicate) )
             {
-                return false;
+                return ;
             }
         }
-        if(conjunction.solution.size() != 0){    
-            solution.add(conjunction.solutionString());
-        }
-        return true;
+
+        solution.add(conjunction.solutionString());
+        
     }
 
     private static boolean delVarCond(SimilarityPredicate similarityPredicate) {
@@ -224,27 +223,27 @@ public class SolveSim {
         conjunction.map((variable) similarityPredicate.el1, similarityPredicate.el2);
     }
 
-    // public static void main(String[] args) {
+    public static void main(String[] args) {
         
-    //     String equation1 = "(f_u(X) ~ 0.2 g_u(a, b))";
-    //     String relations = "(f_u, g_u, 0.9)";
-    //     String proximityValue = "d";
+        String equation1 = "x ~ 0.4  x ";
+        String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (b, f_u, 0.3), (b, f, 0.3), (b, g_u, 0.3), (b, g, 0.3), (b, h, 0.3)";
+        String proximityValue = "true";
 
-    //     com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
-    //     com.example.parser.RelationsParser.parse(relations);
+        com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
+        com.example.parser.RelationsParser.parse(relations);
 
-    //     String result = "";
-    //     boolean isProximity = "true".equalsIgnoreCase(proximityValue);
+        String result = "";
+        boolean isProximity = "true".equalsIgnoreCase(proximityValue);
 
-    //     if (isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
-    //         result = "The relation is not transitive.";
-    //     } else {
-    //         SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
-    //         result = com.example.algorithm.SolveSim.solve(solverInstance);
-    //     }
+        if (!isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
+            result = "The relation is not transitive.";
+        } else {
+            SolTransformation solverInstance = isProximity ? new SolPc() : new SolSc();
+            result = com.example.algorithm.SolveSim.solve(solverInstance);
+        }
 
-    //     System.out.println(result);
+        System.out.println(result);
 
-    // }
+    }
 
 }
