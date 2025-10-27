@@ -24,6 +24,11 @@ public class DisjunctionParser {
     }
 
     public static Conjunction parseConjunction(String input) {
+
+        if (input.equalsIgnoreCase("true")) {
+            return new Conjunction(new ArrayList<>());
+        }
+        
         String[] predicateStrings = input.split("\\s*/\\\\\\s*");
 
         List<SimilarityPredicate> predicates = new ArrayList<>();
