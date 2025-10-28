@@ -32,7 +32,7 @@ public class SimilarityPredicate{
 
     @Override
     public String toString(){
-        return el1.toString() + " ~= " + Double.toString(CutValue) + " " + el2.toString();
+        return el1.toString() + " = " + Double.toString(CutValue) + " " + el2.toString();
     }
     
 }
