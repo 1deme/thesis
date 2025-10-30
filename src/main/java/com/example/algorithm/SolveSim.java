@@ -1,5 +1,6 @@
 package com.example.algorithm;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import com.example.constraintElements.FunctionApplication;
@@ -25,7 +26,22 @@ public class SolveSim {
         disjunction.conjunctions.clear();
         com.example.relations.relationCollection.collection.clear();
         com.example.utils.FreshSymbolGenerator.usedChars.clear();
-        return solution.size() == 0 ? "The equation has no solution." : solution.stream().collect(Collectors.joining(" \\/ \n"));
+        AtomicBoolean specialFound = new AtomicBoolean(false);
+
+        return solution.stream()
+            .filter(s -> {
+                boolean hasSpecial = s.contains("< ;");
+                if (hasSpecial) {
+                    if (specialFound.get()) {
+                        return false;
+                    } else {
+                        specialFound.set(true);
+                        return true;
+                    }
+                }
+                return true;
+            })
+            .collect(Collectors.joining(" \\/ \n"));
     }
 
     public static void sim(Conjunction conjunction, SolTransformation solOp){
@@ -55,7 +71,10 @@ public class SolveSim {
             }
             if(SolSUCond(similarityPredicate)){
                 solOp.apply(similarityPredicate, conjunction);
-                return ;
+                if(solOp instanceof SolPc){
+                    return;
+                }
+                continue;
             }
             if(ConfFSCond(similarityPredicate) || ConfUFSCond(similarityPredicate) || 
                 ConfOFSCond(similarityPredicate) || CheckOccCond(similarityPredicate) )
@@ -207,9 +226,6 @@ public class SolveSim {
             conjunction.proximtyDegree,
             com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
         );
-        //disjunction.add(conjunction);
-        
-
     }
 
     public static void oriUFSOp(SimilarityPredicate similarityPredicate, Conjunction conjunction){
@@ -224,10 +240,19 @@ public class SolveSim {
     }
 
     public static void main(String[] args) {
-        
-        String equation1 = "x ~ 0.4  x ";
-        String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (b, f_u, 0.3), (b, f, 0.3), (b, g_u, 0.3), (b, g, 0.3), (b, h, 0.3)";
+
+        // String equation1 = "(f_u(f(X, b), h(X, Y), Z) ~ 0.4 g_u(g(a, Y), b, f(X, Z)))";
+        // String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (h, g, 0.4)";
+        // String proximityValue = "false";
+
+        String equation1 = "(f_u(X, f(X, b), Y, h(X, Y)) ~ 0.4 g_u(g(a, Y), b))";
+        String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (h, g, 0.3) ";
         String proximityValue = "true";
+
+        //(f_u(X, f(X, b), h(X, Y)) ~ 0.4 g_u(g(a, Y))
+        // String equation1 = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
+        // String relations = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
+        // String proximityValue = "true";
 
         com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
         com.example.parser.RelationsParser.parse(relations);
