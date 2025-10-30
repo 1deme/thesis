@@ -243,16 +243,15 @@ public class SolveSim {
 
         // String equation1 = "(f_u(f(X, b), h(X, Y), Z) ~ 0.4 g_u(g(a, Y), b, f(X, Z)))";
         // String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (h, g, 0.4)";
+        // String proximityValue = "true";
+
+        // String equation1 = "(f_u(X, f(X, b), Y, h(X, Y)) ~ 0.4 g_u(g(a, Y), b))";
+        // String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (h, g, 0.3) ";
         // String proximityValue = "false";
 
-        String equation1 = "(f_u(X, f(X, b), Y, h(X, Y)) ~ 0.4 g_u(g(a, Y), b))";
-        String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (h, g, 0.3) ";
-        String proximityValue = "true";
-
-        //(f_u(X, f(X, b), h(X, Y)) ~ 0.4 g_u(g(a, Y))
-        // String equation1 = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
-        // String relations = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
-        // String proximityValue = "true";
+        String equation1 = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
+        String relations = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
+        String proximityValue = "false";
 
         com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
         com.example.parser.RelationsParser.parse(relations);
