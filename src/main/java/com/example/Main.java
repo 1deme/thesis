@@ -104,7 +104,7 @@ public class Main {
                     com.example.parser.RelationsParser.parse(relations);
 
                     String result = "";
-                    boolean isProximity = "true".equalsIgnoreCase(proximityValue);
+                    boolean isProximity = "false".equalsIgnoreCase(proximityValue);
 
                     if (!isProximity && !com.example.relations.relationCollection.checkTransitivity()) {
                         result = "The relation is not transitive.";

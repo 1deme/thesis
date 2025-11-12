@@ -9,13 +9,13 @@ import com.example.predicates.SimilarityPredicate;
 public class DisjunctionParser {
 
     public static Disjunction parse(String input) {
-        input = input.trim();
+        input = removeOuterParentheses(input);
 
         String[] conjunctionStrings = input.split("\\s*\\\\/\\s*");
 
         List<Conjunction> conjunctions = new ArrayList<>();
         for (String conjunctionStr : conjunctionStrings) {
-            conjunctionStr = conjunctionStr.trim().replaceAll("^\\(|\\)$", "").trim();
+            conjunctionStr = removeOuterParentheses(conjunctionStr);
             Conjunction conjunction = parseConjunction(conjunctionStr);
             conjunctions.add(conjunction);
         }
@@ -33,12 +33,30 @@ public class DisjunctionParser {
 
         List<SimilarityPredicate> predicates = new ArrayList<>();
         for (String predicateStr : predicateStrings) {
-            predicateStr = predicateStr.trim();
+            predicateStr = removeOuterParentheses(predicateStr);
             SimilarityPredicate predicate = SimilarityPredicateParser.parse(predicateStr);
             predicates.add(predicate);
         }
 
         return new Conjunction(predicates);
     }
+
+    private static String removeOuterParentheses(String s) {
+        s = s.trim();
+        if (s.startsWith("(") && s.endsWith(")")) {
+            int depth = 0;
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                if (c == '(') depth++;
+                else if (c == ')') depth--;
+                if (depth == 0 && i < s.length() - 1) {
+                    return s;
+                }
+            }
+            return s.substring(1, s.length() - 1).trim();
+        }
+        return s;
+    }
+    
 
 }
