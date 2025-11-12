@@ -34,5 +34,9 @@ public class SimilarityPredicate{
     public String toString(){
         return el1.toString() + " = " + Double.toString(CutValue) + " " + el2.toString();
     }
+
+    public String solutioString(){
+        return el1.toString() + " = " + el2.toString();
+    }
     
 }

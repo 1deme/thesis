@@ -61,7 +61,7 @@ public class Conjunction {
         StringBuilder sb = new StringBuilder();
         sb.append(" < ");
         for (int i = 0; i < solution.size(); i++) {
-            sb.append(solution.get(i));
+            sb.append(solution.get(i).solutioString());
             if (i < solution.size() - 1) {
                 sb.append(" /\\ "); 
             }
