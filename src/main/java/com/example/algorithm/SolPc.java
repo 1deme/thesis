@@ -13,7 +13,10 @@ import com.example.predicates.SimilarityPredicate;
 public class SolPc implements SolTransformation {
     @Override
     public void apply(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
+
         if(similarityPredicate.el2.isVariable()){
+            conjunction.solution.add(similarityPredicate);
+            com.example.algorithm.SolveSim.disjunction.add(conjunction);
             return;
         }
         List<FunctionSymbol> neighbors =
