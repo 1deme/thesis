@@ -21,6 +21,11 @@ public class SimilarityPredicate{
         return this;
     }
 
+    public SimilarityPredicate mapSol(variable from, Term to){
+        el2 = el2.map(from, to);
+        return this;
+    }
+
     public SimilarityPredicate setCutValue(float CutValue){
         this.CutValue = CutValue;
         return this;

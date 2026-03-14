@@ -22,9 +22,19 @@ public class Conjunction {
 
     public void map(variable from, Term to){
         constraints.stream().map(x -> x.map(from, to)).collect(Collectors.toList());
+        solution.stream().map(x -> x.mapSol(from, to)).collect(Collectors.toList());
     }
 
     public void map(variable from, Term to, Predicate<SimilarityPredicate> cond){
+
+        solution.stream().map(x -> {
+            if(cond.test(x)){
+                return x.mapSol(from, to);
+            }
+            else{
+                return x;
+            }
+        } ).collect(Collectors.toList());
         
         constraints.stream().map(x -> {
             if(cond.test(x)){
@@ -34,6 +44,7 @@ public class Conjunction {
                 return x;
             }
         } ).collect(Collectors.toList());
+        
     }
 
     public boolean containt(Term el){

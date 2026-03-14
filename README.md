@@ -21,4 +21,4 @@
 
 or visit the deployed versio
 
-[View the deployed site](https://thesis-production-5dd7.up.railway.app)
+[View the deployed site](https://www3.risc.jku.at/projects/stout/software/srcs-comm/index.html)

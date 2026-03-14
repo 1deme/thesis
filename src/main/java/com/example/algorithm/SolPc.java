@@ -30,11 +30,11 @@ public class SolPc implements SolTransformation {
 
             Term newTerm = constructNewTerm(neighbor, similarityPredicate.el2.arity());
             Conjunction newConjunction = conjunction.createCopy();
-            newConjunction.map((variable) similarityPredicate.el1, newTerm);
 
-            //conjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
             newConjunction.solution = new LinkedList<>(conjunction.solution);
             newConjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
+
+            newConjunction.map((variable) similarityPredicate.el1, newTerm);
 
             newConjunction.add(new SimilarityPredicate(newTerm, similarityPredicate.el2, newCutVal));
             com.example.algorithm.SolveSim.disjunction.add(newConjunction);
