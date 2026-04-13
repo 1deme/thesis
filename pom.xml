@@ -11,6 +11,8 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <teavm.version>0.11.0</teavm.version>
+
     </properties>
 
     <dependencies>
@@ -19,6 +21,35 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.0</version>
             <scope>test</scope>
+        </dependency>
+
+
+        <!-- TeaVM class library -->
+        <dependency>
+            <groupId>org.teavm</groupId>
+            <artifactId>teavm-classlib</artifactId>
+            <version>${teavm.version}</version>
+        </dependency>
+
+        <!-- TeaVM core -->
+        <dependency>
+            <groupId>org.teavm</groupId>
+            <artifactId>teavm-core</artifactId>
+            <version>${teavm.version}</version>
+        </dependency>
+
+        <!-- JSO APIs for JavaScript interop -->
+        <dependency>
+            <groupId>org.teavm</groupId>
+            <artifactId>teavm-jso-apis</artifactId>
+            <version>${teavm.version}</version>
+        </dependency>
+
+        <!-- JSO implementation - THIS WAS MISSING! -->
+        <dependency>
+            <groupId>org.teavm</groupId>
+            <artifactId>teavm-jso-impl</artifactId>
+            <version>${teavm.version}</version>
         </dependency>
     </dependencies>
 
@@ -36,6 +67,24 @@
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.teavm</groupId>
+                <artifactId>teavm-maven-plugin</artifactId>
+                <version>${teavm.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.Main</mainClass>
+                            <targetDirectory>${project.build.directory}/teavm</targetDirectory>
+                            <targetFileName>classes.js</targetFileName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
