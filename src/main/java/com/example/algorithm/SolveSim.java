@@ -210,22 +210,30 @@ public class SolveSim {
         FunctionApplication f2 = (FunctionApplication) similarityPredicate.el2;
         List<FunctionApplication> prems = com.example.utils.Permutations.generatePermutations(f1.functionSymbol, f1.args, f2.arity());
         FunctionApplication mem = prems.remove(0);
-        FunctionApplication newF2 = f2.createCopy();
-        newF2.functionSymbol = mem.functionSymbol;
+        
         for(FunctionApplication prem : prems){
             Conjunction conj = conjunction.createCopy();
+            
+            FunctionApplication newF2Loop = f2.createCopy();
+            newF2Loop.functionSymbol = mem.functionSymbol;
+            
             decOfSOp(
                 (FunctionApplication) prem,
-                (FunctionApplication) newF2, 
+                newF2Loop, 
                 similarityPredicate.CutValue, conj
             );
+            
             conj.proximtyDegree = Math.min(
                 conj.proximtyDegree,
                 com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
             );
             disjunction.add(conj);
         }
-        decOfSOp(mem, newF2, similarityPredicate.CutValue, conjunction);
+        
+        FunctionApplication finalNewF2 = f2.createCopy();
+        finalNewF2.functionSymbol = mem.functionSymbol;
+        
+        decOfSOp(mem, finalNewF2, similarityPredicate.CutValue, conjunction);
         conjunction.proximtyDegree = Math.min(
             conjunction.proximtyDegree,
             com.example.relations.relationCollection.lookup(f1.functionSymbol, f2.functionSymbol)
@@ -245,16 +253,14 @@ public class SolveSim {
 
     public static void main(String[] args) {
 
-        // String equation1 = "(f_u(f(X, b), h(X, Y), Z) ~ 0.4 g_u(g(a, Y), b, f(X, Z)))";
-        // String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (f, h, 0.4), (h, g, 0.4)";
-        // String proximityValue = "true";
+        String equation1 = "(f(X, h(Y)) ~ 0.4 g(h(a), p(b)))";
+        String relations = "(f, g, 0.9), (h, p, 0.7), (a, b, 0.6)";
+        String proximityValue = "true";
 
         // String equation1 = "(f_u(X, f(X, b), Y, h(X, Y)) ~ 0.4 g_u(g(a, Y), b))";
         // String relations = "(f_u, g_u, 0.6), (f, g, 0.5), (h, g, 0.3) ";
         // String proximityValue = "true";
-        String equation1 = " (X ~ 0.6 Y /\\ M ~ 0.6 f(X) )";
-        String relations = "";
-        String proximityValue = "false";
+
 
         com.example.algorithm.SolveSim.disjunction = com.example.parser.DisjunctionParser.parse(equation1);
         com.example.parser.RelationsParser.parse(relations);
@@ -268,7 +274,7 @@ public class SolveSim {
             result = com.example.algorithm.SolveSim.solve(solverInstance);
         }
 
-        System.out.println(result);
+       System.out.println(result);
 
     }
 

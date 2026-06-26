@@ -1,6 +1,5 @@
 package com.example.algorithm;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.example.constraintElements.FunctionApplication;
@@ -11,6 +10,7 @@ import com.example.dnf.Conjunction;
 import com.example.predicates.SimilarityPredicate;
 
 public class SolPc implements SolTransformation {
+
     @Override
     public void apply(SimilarityPredicate similarityPredicate, Conjunction conjunction) {
 
@@ -19,8 +19,12 @@ public class SolPc implements SolTransformation {
             com.example.algorithm.SolveSim.disjunction.add(conjunction);
             return;
         }
-        List<FunctionSymbol> neighbors =
-         com.example.relations.relationCollection.getneighborhood(((FunctionApplication)similarityPredicate.el2).functionSymbol, similarityPredicate.CutValue);
+        
+        List<FunctionSymbol> neighbors = com.example.relations.relationCollection.getneighborhood(
+            ((FunctionApplication)similarityPredicate.el2).functionSymbol, 
+            similarityPredicate.CutValue
+        );
+        
         for (FunctionSymbol neighbor : neighbors) {
 
             double newCutVal = Math.min(
@@ -29,9 +33,9 @@ public class SolPc implements SolTransformation {
             );
 
             Term newTerm = constructNewTerm(neighbor, similarityPredicate.el2.arity());
+            
             Conjunction newConjunction = conjunction.createCopy();
 
-            newConjunction.solution = new LinkedList<>(conjunction.solution);
             newConjunction.solution.add(new SimilarityPredicate(similarityPredicate.el1, newTerm, newCutVal));
 
             newConjunction.map((variable) similarityPredicate.el1, newTerm);
